@@ -66,6 +66,7 @@ public class player27 implements ContestSubmission
 
 	public static void main(String[] args)
 	{
+		System.out.println("Shit");
 		player27 p = new player27();
 		p.run();
 	}

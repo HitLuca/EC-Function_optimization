@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="EC-Project">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/testrun.jar!/" />
+      <root url="jar://$PROJECT_DIR$/contest.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assignmentfiles_2017.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

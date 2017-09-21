@@ -1,5 +1,6 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
+import src.*;
 
 import java.util.Random;
 import java.util.Properties;
@@ -46,18 +47,25 @@ public class player27 implements ContestSubmission
     
 	public void run()
 	{
-		// Run your algorithm here
-        
+//		if(evaluation_ == null)
+//			System.out.println("HIII POOP");
+//		// Run your algorithm here
+//		Population population = new Population(50, new CrossoverAverage(), new Mutation(), new SelectionBestFitness(20), evaluation_, new SurvivalBestFitness(10));
+//
+//
+//		GA ga = new GA(population, 10);
+//		ga.run();
+
         int evals = 0;
-        // init population
-        // calculate fitness
+//         init population
+//         calculate fitness
         while(evals<evaluations_limit_){
             // Select parents
             // Apply crossover / mutation operators
             double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
             // Check fitness of unknown fuction
-//            Double fitness = (double) evaluation_.evaluate(child);
-//            System.out.println(fitness);
+            Double fitness = (double) evaluation_.evaluate(child);
+            System.out.println(fitness);
             evals++;
             // Select survivors
         }

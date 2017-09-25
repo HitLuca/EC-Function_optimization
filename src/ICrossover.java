@@ -7,5 +7,5 @@ import org.vu.contest.ContestEvaluation;
  */
 public interface ICrossover {
 
-    public Individual crossover(Individual parent1, Individual parent2, Mutation mutation, ContestEvaluation evaluation);
+    public Individual crossover(Individual parent1, Individual parent2, IMutation mutation, ContestEvaluation evaluation);
 }

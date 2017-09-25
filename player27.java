@@ -47,28 +47,29 @@ public class player27 implements ContestSubmission
     
 	public void run()
 	{
-//		if(evaluation_ == null)
-//			System.out.println("HIII POOP");
-//		// Run your algorithm here
-//		Population population = new Population(50, new CrossoverAverage(), new Mutation(), new SelectionBestFitness(20), evaluation_, new SurvivalBestFitness(10));
-//
-//
-//		GA ga = new GA(population, 10);
-//		ga.run();
+		if(evaluation_ == null)
+			System.out.println("HIII POOP");
+		// Run your algorithm here
+		int populationSize = 1000;
+		Population population = new Population(populationSize, evaluation_);
 
-        int evals = 0;
-//         init population
-//         calculate fitness
-        while(evals<evaluations_limit_){
-            // Select parents
-            // Apply crossover / mutation operators
-            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-            // Check fitness of unknown fuction
-            Double fitness = (double) evaluation_.evaluate(child);
-            System.out.println(fitness);
-            evals++;
-            // Select survivors
-        }
+
+		GA ga = new GA(population, new SurvivalBestFitness((int)(0.5*populationSize)), new CrossoverAverage(), new SelectionBestFitness((int) (0.5*populationSize)), new MutationGaussian(), evaluation_, 100);
+		ga.run();
+//
+//        int evals = 0;
+////         init population
+////         calculate fitness
+//        while(evals<evaluations_limit_){
+//            // Select parents
+//            // Apply crossover / mutation operators
+//            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+//            // Check fitness of unknown fuction
+//            Double fitness = (double) evaluation_.evaluate(child);
+//            System.out.println(fitness);
+//            evals++;
+//            // Select survivors
+//        }
 
 	}
 

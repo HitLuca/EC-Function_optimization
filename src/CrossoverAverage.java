@@ -10,10 +10,10 @@ import java.util.Random;
 public class CrossoverAverage implements ICrossover{
 
     @Override
-    public Individual crossover(Individual parent1, Individual parent2, Mutation mutation, ContestEvaluation evaluation) {
+    public Individual crossover(Individual parent1, Individual parent2, IMutation mutation, ContestEvaluation evaluation) {
         double[] child_genome = new double[Individual.GENOME_SIZE];
         for(int i=0; i<Individual.GENOME_SIZE; i++) {
-            child_genome[i] = parent1.getGenome()[i] + parent2.getGenome()[i];
+            child_genome[i] = (parent1.getGenome()[i] + parent2.getGenome()[i])/2;
         }
         child_genome = mutation.mutate(child_genome);
 

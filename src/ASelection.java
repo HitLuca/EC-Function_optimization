@@ -6,8 +6,15 @@ import java.util.Comparator;
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public interface ISelection {
-    public class FitnessComparator implements Comparator<Individual>
+public abstract class ASelection {
+
+    private int size;
+    public ASelection(int size) {
+            this.size=size;
+    }
+
+
+    static public class FitnessComparator implements Comparator<Individual>
     {
         // Used for sorting in ascending order of
         // roll name
@@ -22,6 +29,11 @@ public interface ISelection {
         }
     }
 
-    public ArrayList<Individual> select(ArrayList<Individual> population);
-    public ArrayList<Individual> select(ArrayList<Individual> population, int size);
+    public ArrayList<Individual> select(ArrayList<Individual> population)
+    {
+        return select(population, size);
+    }
+
+
+    public abstract ArrayList<Individual> select(ArrayList<Individual> population, int size);
 }

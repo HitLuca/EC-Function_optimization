@@ -3,7 +3,6 @@ package src;
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -14,53 +13,42 @@ public class Population {
     private ArrayList<Individual> population;
     private int size;
 
-    ICrossover crossover;
-    Mutation mutation;
-    ISelection selection;
-    ContestEvaluation evaluation;
-    ISurvival survival;
+
 
     private double meanFitness;
     private double worstFitness;
     private double bestFitness;
     private double variance;
 
-    public Population(int size, ICrossover crossover, Mutation mutation, ISelection selection, ContestEvaluation evaluation, ISurvival survival) {
+    public Population(int size, ContestEvaluation evaluation) {
         this.size = size;
-        this.crossover = crossover;
-        this.mutation = mutation;
-        this.selection = selection;
-        this.evaluation = evaluation;
-        initialize();
+        initialize(evaluation);
     }
 
-    public Population(ArrayList<Individual> population, int size, ICrossover crossover, Mutation mutation, ISelection selection, ContestEvaluation evaluation) {
-        this.size = size;
-        this.crossover = crossover;
-        this.mutation = mutation;
-        this.selection = selection;
-        this.evaluation = evaluation;
+    public Population(ArrayList<Individual> population) {
+        this.size = population.size();
         this.population = population;
     }
 
-    protected void initialize()
+    protected void initialize(ContestEvaluation evaluation)
     {
+        population = new ArrayList<>();
         for(int i=0; i<size; i++) {
             population.add( new Individual(evaluation));
         }
     }
 
-    public void survive()
+    public void survive(ISurvival survival)
     {
-
+        population = survival.survival(population);
     }
 
-    public ArrayList<Individual> select()
+    public ArrayList<Individual> select(ASelection selection)
     {
         return selection.select(population, size);
     }
 
-    public void reproduce(ArrayList<Individual> parents)
+    public void reproduce(ArrayList<Individual> parents, ICrossover crossover, IMutation mutation, ContestEvaluation evaluation)
     {
 
         Collections.shuffle(parents);
@@ -78,7 +66,7 @@ public class Population {
 
     public void updateStatistics()
     {
-        System.out.print(population.get(0).getFitness());
+        System.out.println(population.get(0).getFitness());
     }
 
 }

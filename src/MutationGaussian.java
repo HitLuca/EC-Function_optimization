@@ -5,9 +5,9 @@ import java.util.Random;
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public class Mutation {
+public class MutationGaussian implements IMutation{
 
-    public Mutation() {
+    public MutationGaussian() {
     }
 
     public double[] mutate(double[] child)

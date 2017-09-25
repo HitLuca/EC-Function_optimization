@@ -10,26 +10,30 @@ import java.util.ArrayList;
 public class GA {
 
     Population population;
-//    ISurvival survival;
-//    ICrossover crossover;
-//    ISelection selection;
-//    Mutation mutation;
-//    ContestEvaluation evaluation;
+    ISurvival survival;
+    ICrossover crossover;
+    ASelection selection;
+    MutationGaussian mutation;
+    ContestEvaluation evaluation;
     int epochs;
 
-    public GA(Population population, int epochs) {
+    public GA(Population population, ISurvival survival, ICrossover crossover, ASelection selection, MutationGaussian mutation, ContestEvaluation evaluation, int epochs) {
         this.population = population;
+        this.survival = survival;
+        this.crossover = crossover;
+        this.selection = selection;
+        this.mutation = mutation;
+        this.evaluation = evaluation;
         this.epochs = epochs;
     }
 
     public void run()
     {
         for(int i=0; i<epochs; i++) {
-            population.survive();
-            ArrayList<Individual> parents = population.select();
-            population.reproduce(parents);
+            population.survive(survival);
+            ArrayList<Individual> parents = population.select(selection);
+            population.reproduce(parents, crossover, mutation, evaluation);
             population.updateStatistics();
-            System.out.print(i);
         }
     }
 }

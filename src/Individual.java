@@ -3,6 +3,7 @@ package src;
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -23,9 +24,9 @@ public class Individual {
         object_count++;
         id = object_count;
 
-        double genome[] = new double[10];
+        genome = new double[GENOME_SIZE];
         Random rnd = new Random();
-        for (int i=0; i<10; i++)
+        for (int i=0; i<GENOME_SIZE; i++)
             genome[i] = rnd.nextDouble()*10-5;
 
         fitness = (double) evaluation.evaluate(genome);
@@ -36,7 +37,17 @@ public class Individual {
         object_count++;
         id = object_count;
         genome = _genome;
-        fitness = (double) evaluation.evaluate(genome);
+
+        try {
+            fitness = (double) evaluation.evaluate(genome);
+        }
+        catch (Exception e)
+        {
+//            System.out.print("res ");
+//            System.out.println();
+//            e.printStackTrace();
+            fitness = 0;
+        }
     }
 
     public double[] getGenome() {
@@ -51,5 +62,12 @@ public class Individual {
         return id;
     }
 
-
+    @Override
+    public String toString() {
+        return "Individual{" +
+                "id=" + id +
+                ", genome=" + Arrays.toString(genome) +
+                ", fitness=" + fitness +
+                '}';
+    }
 }

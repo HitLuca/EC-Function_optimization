@@ -15,7 +15,7 @@ public class SurvivalBestFitness implements ISurvival{
 
     @Override
     public ArrayList<Individual> survival(ArrayList<Individual> population, int size) {
-        Collections.sort(population, new ISelection.FitnessComparator());
+        Collections.sort(population, new ASelection.FitnessComparator());
         return new ArrayList<>(population.subList(0, size));
     }
 

@@ -1,5 +1,10 @@
-.idea/workspace.xml
-.idea/tasks.xml
+.idea/
+!.idea/libraries/*
+!.idea/artifacts/*
+!.idea/modules.xml
+!.idea/misc.xml
+!.idea/vcs.xml
+
 out/
 tmp/
 player27\.class

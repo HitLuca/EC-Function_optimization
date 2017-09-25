@@ -1,18 +1,9 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="submission:jar">
-    <output-path>$PROJECT_DIR$/</output-path>
+    <output-path>$PROJECT_DIR$/testrun/</output-path>
     <root id="archive" name="EC-Project.jar">
       <element id="extracted-dir" path="$PROJECT_DIR$/contest.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/EC-Project/player27.class" />
-      <element id="directory" name="src">
-        <element id="dir-copy" path="$PROJECT_DIR$/out/production/EC-Project/src" />
-      </element>
-      <element id="directory" name="javabbob">
-        <element id="dir-copy" path="$PROJECT_DIR$/out/production/EC-Project/javabbob" />
-      </element>
-      <element id="directory" name="META-INF">
-        <element id="dir-copy" path="$PROJECT_DIR$/out/production/EC-Project/META-INF" />
-      </element>
+      <element id="module-output" name="EC-Project" />
     </root>
   </artifact>
 </component>

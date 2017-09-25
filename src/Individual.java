@@ -37,17 +37,8 @@ public class Individual {
         object_count++;
         id = object_count;
         genome = _genome;
+        fitness = (double) evaluation.evaluate(genome);
 
-        try {
-            fitness = (double) evaluation.evaluate(genome);
-        }
-        catch (Exception e)
-        {
-//            System.out.print("res ");
-//            System.out.println();
-//            e.printStackTrace();
-            fitness = 0;
-        }
     }
 
     public double[] getGenome() {

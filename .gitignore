@@ -1,4 +1,7 @@
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
 out/
 tmp/
 player27\.class
+
+submission\.jar

@@ -1,6 +1,7 @@
 package src;
 
 import org.vu.contest.ContestEvaluation;
+import src.components.MutationGaussian;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,7 @@
-package src;
+package src.components;
+
+import src.ASelection;
+import src.Individual;
 
 import java.util.ArrayList;
 

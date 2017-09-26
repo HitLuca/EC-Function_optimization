@@ -1,13 +1,16 @@
-package src;
+package src.components;
 
 import org.vu.contest.ContestEvaluation;
+import src.ICrossover;
+import src.IMutation;
+import src.Individual;
 
 import java.util.Random;
 
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public class CrossoverAverage implements ICrossover{
+public class CrossoverAverage implements ICrossover {
 
     @Override
     public Individual crossover(Individual parent1, Individual parent2, IMutation mutation, ContestEvaluation evaluation) {

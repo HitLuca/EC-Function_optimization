@@ -66,6 +66,7 @@ public class Population {
 
     public void updateStatistics()
     {
+
         System.out.println(population.get(0).getFitness());
     }
 

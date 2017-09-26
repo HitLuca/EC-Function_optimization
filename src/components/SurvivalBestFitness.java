@@ -1,4 +1,8 @@
-package src;
+package src.components;
+
+import src.ASelection;
+import src.ISurvival;
+import src.Individual;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +10,7 @@ import java.util.Collections;
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public class SurvivalBestFitness implements ISurvival{
+public class SurvivalBestFitness implements ISurvival {
 
     private int size;
     public SurvivalBestFitness(int size) {

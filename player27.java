@@ -1,6 +1,10 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import src.*;
+import src.components.CrossoverAverage;
+import src.components.MutationGaussian;
+import src.components.SelectionBestFitness;
+import src.components.SurvivalBestFitness;
 
 import java.util.Random;
 import java.util.Properties;
@@ -47,14 +51,13 @@ public class player27 implements ContestSubmission
     
 	public void run()
 	{
-		if(evaluation_ == null)
-			System.out.println("HIII POOP");
+		printProperties(evaluation_);
 		// Run your algorithm here
 		int populationSize = 1000;
 		Population population = new Population(populationSize, evaluation_);
 
 
-		GA ga = new GA(population, new SurvivalBestFitness((int)(0.5*populationSize)), new CrossoverAverage(), new SelectionBestFitness((int) (0.5*populationSize)), new MutationGaussian(), evaluation_, 100);
+		GA ga = new GA(population, new SurvivalBestFitness((int)(0.8*populationSize)), new CrossoverAverage(), new SelectionBestFitness((int) (0.4*populationSize)), new MutationGaussian(), evaluation_, 100);
 		ga.run();
 //
 //        int evals = 0;
@@ -73,9 +76,19 @@ public class player27 implements ContestSubmission
 
 	}
 
+	public void printProperties(ContestEvaluation evaluation)
+	{
+		Properties p = evaluation.getProperties();
+		int maxEvaluations = Integer.parseInt(p.getProperty("Evaluations"));
+		boolean isMultimodal = Boolean.parseBoolean(p.getProperty("Multimodal"));
+		boolean hasStructure = Boolean.parseBoolean(p.getProperty("Regular"));
+		boolean isSeparable = Boolean.parseBoolean(p.getProperty("Separable"));
+
+		System.out.println("Evaluations: " + maxEvaluations + " Multimodal: " + isMultimodal + " Regular: " + hasStructure + " Separable: " + isSeparable);
+	}
+
 	public static void main(String[] args)
 	{
-		System.out.println("Shit");
 		player27 p = new player27();
 		p.run();
 	}

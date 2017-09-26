@@ -34,7 +34,7 @@ public class Individual {
     }
 
     public static final int GENOME_SIZE = 10;
-    private static int object_count = 0;
+    public static int object_count = 0;
 
     private double genome[];
     private double fitness;

@@ -16,4 +16,8 @@ public abstract class ASelection {
     }
 
     public abstract ArrayList<Individual> select(ArrayList<Individual> population, int size);
+
+    public int getSize() {
+        return size;
+    }
 }

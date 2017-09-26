@@ -17,7 +17,6 @@ public abstract class ACrossover {
         Individual[] pair = new Individual[parentsNumber];
 
         ArrayList<Individual> children = new ArrayList<>();
-
         for (int i = 0; i <= parentsPool.size() - parentsNumber; i += parentsNumber) {
             for (int j = 0; j < parentsNumber; j++) {
                 pair[j] = parentsPool.get(i + j);

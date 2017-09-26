@@ -54,17 +54,17 @@ public class player27 implements ContestSubmission
 		int populationSize = 100;
 		int epochs = 150;
 		Population population = new Population(populationSize, evaluation_);
-		epochs = 0.4*populationSize;
 
-		int parentsNumber = 2;
+		int parentsNumber = (int) (0.4*populationSize);
+		int crossoverPairSize = 2;
 
 		GA ga = new GA(population,
-				new SelectionBestFitness((int) (0.4*populationSize)),
-				parentsNumber,
-				new CrossoverAverage(),
-				new MutationGaussian(),
+				new SelectionBestFitness(parentsNumber),
+				crossoverPairSize,
+				new CrossoverCoinFlipWeighted(),
+				new MutationGaussian(0.1),
 				new SurvivalBestFitness(populationSize),
-				evaluation_, epochs);
+				evaluation_, Integer.MAX_VALUE);
 
 		ga.run();
 //

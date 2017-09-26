@@ -38,13 +38,13 @@ public class Population {
 
     public ArrayList<Individual> select(ASelection selection)
     {
-        return selection.select(population, size);
+        return selection.select(population);
     }
 
     public void reproduce(ArrayList<Individual> parents, int parentsNumber, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
     {
-
-        population.addAll(crossover.crossover(parentsNumber, parents, mutation, evaluation));
+        ArrayList<Individual> children = crossover.crossover(parentsNumber, parents, mutation, evaluation);
+        population.addAll(children);
 
     }
 
@@ -70,7 +70,7 @@ public class Population {
         }
         meanFitness /= population.size();
 
-        System.out.println("Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness );
+        System.out.println("Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness + " Individuals: " + Individual.object_count);
     }
 
     public static void printPopulation(ArrayList<Individual> population)
@@ -84,5 +84,13 @@ public class Population {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getCurrentSize() {
+        return population.size();
     }
 }

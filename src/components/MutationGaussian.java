@@ -7,7 +7,10 @@ import java.util.Random;
 
 public class MutationGaussian extends AMutation {
 
-    public MutationGaussian() {
+    private double sigma;
+
+    public MutationGaussian(double sigma) {
+        this.sigma = sigma;
     }
 
     public double[] mutate(double[] child)
@@ -15,7 +18,7 @@ public class MutationGaussian extends AMutation {
         Random rnd = new Random();
         for(int i = 0; i< Individual.GENOME_SIZE; i++)
         {
-            child[i]+= rnd.nextGaussian()/10;
+            child[i]+= rnd.nextGaussian()*sigma;
         }
 
         return child;

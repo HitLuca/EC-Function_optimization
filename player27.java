@@ -73,7 +73,7 @@ public class player27 implements ContestSubmission
 ////         calculate fitness
 //        while(evals<evaluations_limit_){
 //            // Select parents
-//            // Apply crossover / mutation operators
+//            // Apply crossoverPair / mutation operators
 //            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 //            // Check fitness of unknown fuction
 //            Double fitness = (double) evaluation_.evaluate(child);

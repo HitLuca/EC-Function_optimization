@@ -49,16 +49,7 @@ public class Population {
     public void reproduce(ArrayList<Individual> parents, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
     {
 
-        Collections.shuffle(parents);
-        Iterator<Individual> i = parents.iterator();
-        Individual parent1 = i.next();
-        Individual parent2;
-
-        for (; i.hasNext();)
-        {
-            parent2 = i.next();
-            population.add(crossover.crossover(parent1, parent2, mutation, evaluation));
-        }
+        population.addAll(crossover.crossover(parents, mutation, evaluation));
 
     }
 

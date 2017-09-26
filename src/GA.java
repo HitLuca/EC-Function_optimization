@@ -11,14 +11,14 @@ import java.util.ArrayList;
 public class GA {
 
     Population population;
-    ISurvival survival;
-    ICrossover crossover;
+    ASurvival survival;
+    ACrossover crossover;
     ASelection selection;
     MutationGaussian mutation;
     ContestEvaluation evaluation;
     int epochs;
 
-    public GA(Population population, ISurvival survival, ICrossover crossover, ASelection selection, MutationGaussian mutation, ContestEvaluation evaluation, int epochs) {
+    public GA(Population population, ASurvival survival, ASelection selection, ACrossover crossover, MutationGaussian mutation, ContestEvaluation evaluation, int epochs) {
         this.population = population;
         this.survival = survival;
         this.crossover = crossover;

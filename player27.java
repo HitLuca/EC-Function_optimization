@@ -53,11 +53,15 @@ public class player27 implements ContestSubmission
 	{
 		printProperties(evaluation_);
 		// Run your algorithm here
-		int populationSize = 1000;
+		int populationSize = 100;
+		int epochs = 10;
 		Population population = new Population(populationSize, evaluation_);
 
 
-		GA ga = new GA(population, new SurvivalBestFitness((int)(0.8*populationSize)), new CrossoverAverage(), new SelectionBestFitness((int) (0.4*populationSize)), new MutationGaussian(), evaluation_, 100);
+		GA ga = new GA(population, new SurvivalBestFitness((int)(0.8*populationSize)),
+				new SelectionBestFitness((int) (0.4*populationSize)), new CrossoverAverage(),
+				new MutationGaussian(), evaluation_, epochs);
+
 		ga.run();
 //
 //        int evals = 0;

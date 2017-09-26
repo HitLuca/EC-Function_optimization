@@ -38,7 +38,7 @@ public class Population {
         }
     }
 
-    public void survive(ISurvival survival)
+    public void survive(ASurvival survival)
     {
         population = survival.survival(population);
     }
@@ -48,7 +48,7 @@ public class Population {
         return selection.select(population, size);
     }
 
-    public void reproduce(ArrayList<Individual> parents, ICrossover crossover, IMutation mutation, ContestEvaluation evaluation)
+    public void reproduce(ArrayList<Individual> parents, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
     {
 
         Collections.shuffle(parents);
@@ -66,8 +66,27 @@ public class Population {
 
     public void updateStatistics()
     {
+        meanFitness = 0;
+        bestFitness = Double.MIN_VALUE;
+        worstFitness = Double.MAX_VALUE;
 
-        System.out.println(population.get(0).getFitness());
+        for (Individual individual: population) {
+            double fitness = individual.getFitness();
+            meanFitness += fitness;
+
+            if(fitness>bestFitness)
+            {
+                bestFitness = fitness;
+            }
+
+            if(fitness<worstFitness)
+            {
+                worstFitness = fitness;
+            }
+        }
+
+        System.out.println();
     }
+
 
 }

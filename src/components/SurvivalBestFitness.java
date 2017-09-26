@@ -1,7 +1,7 @@
 package src.components;
 
 import src.ASelection;
-import src.ISurvival;
+import src.ASurvival;
 import src.Individual;
 
 import java.util.ArrayList;
@@ -10,11 +10,10 @@ import java.util.Collections;
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public class SurvivalBestFitness implements ISurvival {
+public class SurvivalBestFitness extends ASurvival {
 
-    private int size;
     public SurvivalBestFitness(int size) {
-        this.size = size;
+        super(size);
     }
 
     @Override
@@ -23,8 +22,4 @@ public class SurvivalBestFitness implements ISurvival {
         return new ArrayList<>(population.subList(0, size));
     }
 
-    @Override
-    public ArrayList<Individual> survival(ArrayList<Individual> population) {
-        return survival( population, size);
-    }
 }

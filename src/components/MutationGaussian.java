@@ -1,6 +1,6 @@
 package src.components;
 
-import src.IMutation;
+import src.AMutation;
 import src.Individual;
 
 import java.util.Random;
@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * Created by Недко on 21.9.2017 г..
  */
-public class MutationGaussian implements IMutation {
+public class MutationGaussian extends AMutation {
 
     public MutationGaussian() {
     }

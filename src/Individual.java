@@ -72,8 +72,10 @@ public class Individual {
     }
 
     public void evaluate(ContestEvaluation evaluation) {
-        this.fitness = (double) evaluation.evaluate(genome);
-        isEvaluated = true;
+        if(!isEvaluated) {
+            this.fitness = (double) evaluation.evaluate(genome);
+            isEvaluated = true;
+        }
     }
 
     public void setGenome(double[] genome) {this.genome = genome;}

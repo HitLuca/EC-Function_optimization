@@ -23,6 +23,9 @@ public class GA {
         this.selection = selection;
         this.mutation = mutation;
         this.evaluation = evaluation;
+
+        evaluation.getProperties();
+
         this.epochs = epochs;
         this.parentsNumber = parentsNumber;
     }

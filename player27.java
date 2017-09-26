@@ -54,6 +54,7 @@ public class player27 implements ContestSubmission
 		int populationSize = 100;
 		int epochs = 150;
 		Population population = new Population(populationSize, evaluation_);
+		epochs = 0.4*populationSize;
 
 		int parentsNumber = 2;
 

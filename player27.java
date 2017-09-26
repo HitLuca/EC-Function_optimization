@@ -18,14 +18,12 @@ public class player27 implements ContestSubmission
 		rnd_ = new Random();
 	}
 	
-	public void setSeed(long seed)
-	{
+	public void setSeed(long seed) {
 		// Set seed of algortihms random process
 		rnd_.setSeed(seed);
 	}
 
-	public void setEvaluation(ContestEvaluation evaluation)
-	{
+	public void setEvaluation(ContestEvaluation evaluation) {
 		// Set evaluation problem used in the run
 		evaluation_ = evaluation;
 		
@@ -52,36 +50,22 @@ public class player27 implements ContestSubmission
 		printProperties(evaluation_);
 		// Run your algorithm here
 		int populationSize = 100;
-		int epochs = 150;
+		int epochs = -1;
+		int parentsNumber = 2;
+		int elitism = 3;
+		double mutationProbability = 0.7;
+
 		Population population = new Population(populationSize, evaluation_);
 
-		int parentsNumber = (int) (0.4*populationSize);
-		int crossoverPairSize = 2;
-
 		GA ga = new GA(population,
-				new SelectionBestFitness(parentsNumber),
-				crossoverPairSize,
-				new CrossoverCoinFlipWeighted(),
-				new MutationGaussian(0.1),
+				new SelectionFitnessProportional(parentsNumber),
+				elitism,
+				new CrossoverAverageWeighted(),
+				new MutationGaussian(0.1, mutationProbability),
 				new SurvivalBestFitness(populationSize),
-				evaluation_, Integer.MAX_VALUE);
+				evaluation_, epochs);
 
 		ga.run();
-//
-//        int evals = 0;
-////         init population
-////         calculate fitness
-//        while(evals<evaluations_limit_){
-//            // Select parents
-//            // Apply crossoverPair / mutation operators
-//            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-//            // Check fitness of unknown fuction
-//            Double fitness = (double) evaluation_.evaluate(child);
-//            System.out.println(fitness);
-//            evals++;
-//            // Select survivors
-//        }
-
 	}
 
 	public void printProperties(ContestEvaluation evaluation)

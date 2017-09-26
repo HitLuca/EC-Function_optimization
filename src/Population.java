@@ -6,50 +6,36 @@ import java.util.ArrayList;
 
 public class Population {
     private ArrayList<Individual> population;
-    private int size;
+    private int maxSize;
 
-    private double meanFitness;
-    private double worstFitness;
-    private double bestFitness;
-    private double variance;
+    private double meanFitness = 0;
+    private double worstFitness = 0;
+    private double bestFitness = 0;
+    private double variance = 0;
 
-    public Population(int size, ContestEvaluation evaluation) {
-        this.size = size;
+    public Population(int maxSize) {
+        this.maxSize = maxSize;
+        population = new ArrayList<>();
+    }
+
+    public Population(int maxSize, ContestEvaluation evaluation) {
+        this.maxSize = maxSize;
+        population = new ArrayList<>();
         initialize(evaluation);
     }
 
     public Population(ArrayList<Individual> population) {
-        this.size = population.size();
+        this.maxSize = population.size();
         this.population = population;
     }
 
-    protected void initialize(ContestEvaluation evaluation)
-    {
-        population = new ArrayList<>();
-        for(int i=0; i<size; i++) {
-            population.add( new Individual(evaluation));
+    protected void initialize(ContestEvaluation evaluation) {
+        for(int i=0; i<maxSize; i++) {
+            population.add(new Individual(evaluation));
         }
     }
 
-    public void survive(ASurvival survival)
-    {
-        population = survival.survival(population);
-    }
-
-    public ArrayList<Individual> select(ASelection selection)
-    {
-        return selection.select(population);
-    }
-
-    public void reproduce(ArrayList<Individual> parents, int parentsNumber, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
-    {
-        ArrayList<Individual> children = crossover.crossover(parentsNumber, parents, mutation, evaluation);
-        population.addAll(children);
-
-    }
-
-    public void updateStatistics()
-    {
+    public void updateStatistics() {
         meanFitness = 0;
         bestFitness = Double.MIN_VALUE;
         worstFitness = Double.MAX_VALUE;
@@ -58,39 +44,54 @@ public class Population {
             double fitness = individual.getFitness();
             meanFitness += fitness;
 
-            if(fitness>bestFitness)
-            {
+            if(fitness>bestFitness) {
                 bestFitness = fitness;
             }
 
-            if(fitness<worstFitness)
-            {
+            if(fitness<worstFitness) {
                 worstFitness = fitness;
             }
         }
         meanFitness /= population.size();
-
-        System.out.println("Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness + " Individuals: " + Individual.object_count);
     }
 
-    public static void printPopulation(ArrayList<Individual> population)
-    {
-        for(Individual i: population)
-        {
+    public String getStatistics() {
+        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
+    }
+
+    public static void printPopulation(ArrayList<Individual> population) {
+        for(Individual i: population) {
             System.out.println(i);
         }
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
-    public int getSize() {
-        return size;
+    public int getMaxSize() {
+        return maxSize;
     }
 
     public int getCurrentSize() {
         return population.size();
+    }
+
+    public ArrayList<Individual> getIndividuals() {
+        return population;
+    }
+
+    public void addIndividuals(ArrayList<Individual> individuals) {
+        population.addAll(individuals);
+    }
+
+    public void evaluateFitness(ContestEvaluation evaluation) {
+        for(Individual i:population) {
+            i.evaluate(evaluation);
+        }
+    }
+
+    public void sortIndividuals() {
+        population.sort(new Individual.FitnessComparator());
+    }
+
+    public ArrayList<Individual> getElites(int elitism) {
+        return new ArrayList<>(population.subList(0, elitism));
     }
 }

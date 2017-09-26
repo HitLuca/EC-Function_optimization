@@ -2,17 +2,13 @@ package src;
 
 import org.vu.contest.ContestEvaluation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
 public class Individual {
-
-    static public class FitnessComparator implements Comparator<Individual>
-    {
-        // Used for sorting in ascending order of
-        // roll name
+    static public class FitnessComparator implements Comparator<Individual> {
+        // Used for sorting in ascending order
         public int compare(Individual a, Individual b)
         {
             if(a.getFitness() > b.getFitness())
@@ -34,37 +30,53 @@ public class Individual {
     }
 
     public static final int GENOME_SIZE = 10;
-    public static int object_count = 0;
+    public static int objectCount = 0;
 
     private double genome[];
     private double fitness;
+    private boolean isEvaluated = false;
     private int id;
 
-    public Individual(ContestEvaluation evaluation)
-    {
-        object_count++;
-        id = object_count;
+    private int max = 5;
+    private int min = -5;
+
+    public Individual(ContestEvaluation evaluation) {
+        objectCount++;
+        id = objectCount;
 
         genome = new double[GENOME_SIZE];
         Random rnd = new Random();
         for (int i=0; i<GENOME_SIZE; i++)
-            genome[i] = rnd.nextDouble()*10-5;
+            genome[i] = rnd.nextDouble() * (max-min) + min;
 
         fitness = (double) evaluation.evaluate(genome);
+        isEvaluated = true;
     }
 
-    public Individual(double _genome[], ContestEvaluation evaluation)
-    {
-        object_count++;
-        id = object_count;
-        genome = _genome;
+    public Individual(double genome[], ContestEvaluation evaluation) {
+        objectCount++;
+        id = objectCount;
+        this.genome = genome;
         fitness = (double) evaluation.evaluate(genome);
+        isEvaluated = true;
+    }
 
+    public Individual(double genome[]) {
+        objectCount++;
+        id = objectCount;
+        this.genome = genome;
     }
 
     public double[] getGenome() {
         return genome;
     }
+
+    public void evaluate(ContestEvaluation evaluation) {
+        this.fitness = (double) evaluation.evaluate(genome);
+        isEvaluated = true;
+    }
+
+    public void setGenome(double[] genome) {this.genome = genome;}
 
     public double getFitness() {
         return fitness;

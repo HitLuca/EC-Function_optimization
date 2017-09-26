@@ -1,12 +1,9 @@
 package src.components;
 
-import src.ASelection;
 import src.ASurvival;
 import src.Individual;
-import src.Population;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class SurvivalBestFitness extends ASurvival {
 

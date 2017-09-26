@@ -1,9 +1,7 @@
 package src;
 
 import org.vu.contest.ContestEvaluation;
-import src.components.MutationGaussian;
 
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -13,34 +11,46 @@ public class GA {
     private ASurvival survival;
     private ACrossover crossover;
     private ASelection selection;
-    private MutationGaussian mutation;
+    private AMutation mutation;
     private ContestEvaluation evaluation;
     private int epochs;
-    private int parentsNumber;
+    private int elitism;
 
-    public GA(Population population, ASelection selection, int pairSize, ACrossover crossover, MutationGaussian mutation, ASurvival survival,ContestEvaluation evaluation, int epochs) {
+    public GA(Population population, ASelection selection, int elitism, ACrossover crossover, AMutation mutation, ASurvival survival,ContestEvaluation evaluation, int epochs) {
         this.population = population;
         this.survival = survival;
         this.crossover = crossover;
         this.selection = selection;
         this.mutation = mutation;
         this.evaluation = evaluation;
+        this.elitism = elitism;
 
         Properties props = evaluation.getProperties();
         int evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
 
-        this.epochs = Math.min(epochs, (evaluations_limit_-population.getSize())/(int) Math.ceil(selection.getSize()/pairSize));
-        this.parentsNumber = pairSize;
+        if(epochs == -1) {
+            this.epochs = Integer.MAX_VALUE;
+        } else {
+            this.epochs = epochs; //Math.min(epochs, (evaluations_limit_-population.getMaxSize())/(int) Math.ceil(selection.getSize()/pairSize));
+        }
     }
 
     public void run()
     {
         for(int i=0; i<epochs; i++) {
-            ArrayList<Individual> parents = population.select(selection);
-            population.reproduce(parents, parentsNumber, crossover, mutation, evaluation);
-            System.out.print("Epoch: " + i + " ");
-            population.updateStatistics();
-            population.survive(survival);
+            Population newPopulation = new Population(population.getMaxSize());
+            population.sortIndividuals();
+            newPopulation.addIndividuals(population.getElites(elitism));
+            while (newPopulation.getCurrentSize() < population.getMaxSize()) {
+                ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                ArrayList<Individual> children = crossover.crossover(parents);
+                mutation.mutate(children);
+                newPopulation.addIndividuals(children);
+            }
+            mutation.mutate(newPopulation.getIndividuals());
+            newPopulation.evaluateFitness(evaluation);
+            population = newPopulation;
+
         }
     }
 }

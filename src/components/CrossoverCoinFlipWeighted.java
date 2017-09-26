@@ -1,37 +1,38 @@
 package src.components;
 
-import org.vu.contest.ContestEvaluation;
 import src.ACrossover;
-import src.AMutation;
 import src.Individual;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CrossoverCoinFlipWeighted extends ACrossover {
-
     @Override
-    public Individual crossoverPair(Individual[] parentsPair, AMutation mutation, ContestEvaluation evaluation) {
+    public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
+        ArrayList<Individual> children = new ArrayList<>();
 
-        double[] child_genome = new double[Individual.GENOME_SIZE];
+        double[] childGenome = new double[Individual.GENOME_SIZE];
         Random rnd = new Random();
-        double[] ratio = new double[parentsPair.length];
+
+        double[] ratio = new double[parents.size()];
         double tot = 0.0;
-        for (int i=0; i<parentsPair.length; i++){
-            tot += parentsPair[i].getFitness();
+
+        for (int i=0; i<parents.size(); i++){
+            tot += parents.get(i).getFitness();
             ratio[i] = tot;
         }
 
         for(int i=0; i<Individual.GENOME_SIZE; i++) {
             double t = rnd.nextDouble()*tot;
-            for (int j=0; j<parentsPair.length; j++) {
+            for (int j=0; j<parents.size(); j++) {
                 if (ratio[j] >= t) {
-                    child_genome[i] = parentsPair[j].getGenome()[i];
+                    childGenome[i] = parents.get(j).getGenome()[i];
                     break;
                 }
             }
         }
-        child_genome = mutation.mutate(child_genome);
 
-        return new Individual(child_genome, evaluation);
+        children.add(new Individual(childGenome));
+        return children;
     }
 }

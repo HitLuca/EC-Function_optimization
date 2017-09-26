@@ -15,7 +15,7 @@ public class SelectionBestFitness extends ASelection {
 
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> population, int size) {
-        population.sort(new FitnessComparator());
+        population.sort(new  Individual.FitnessComparatorDecreasing());
         return new ArrayList<>(population.subList(0, size));
     }
 }

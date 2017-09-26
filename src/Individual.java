@@ -12,6 +12,30 @@ import java.util.Random;
  */
 public class Individual {
 
+    static public class FitnessComparator implements Comparator<Individual>
+    {
+        // Used for sorting in ascending order of
+        // roll name
+        public int compare(Individual a, Individual b)
+        {
+            if(a.getFitness() > b.getFitness())
+                return 1;
+            else if (a.getFitness() == b.getFitness())
+                return 0;
+            else
+                return -1;
+        }
+    }
+
+    static public class FitnessComparatorDecreasing implements Comparator<Individual> {
+        Individual.FitnessComparator cmp = new Individual.FitnessComparator();
+
+        @Override
+        public int compare(Individual a, Individual b) {
+            return -cmp.compare(a,b);
+        }
+    }
+
     public static final int GENOME_SIZE = 10;
     private static int object_count = 0;
 

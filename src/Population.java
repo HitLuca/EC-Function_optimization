@@ -82,9 +82,21 @@ public class Population {
                 worstFitness = fitness;
             }
         }
+        meanFitness /= population.size();
 
         System.out.println("Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness );
     }
 
-
+    public static void printPopulation(ArrayList<Individual> population)
+    {
+        for(Individual i: population)
+        {
+            System.out.println(i);
+        }
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -3,6 +3,7 @@ package src.components;
 import src.ASelection;
 import src.ASurvival;
 import src.Individual;
+import src.Population;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,7 @@ public class SurvivalBestFitness extends ASurvival {
 
     @Override
     public ArrayList<Individual> survival(ArrayList<Individual> population, int size) {
-        Collections.sort(population, new ASelection.FitnessComparator());
+        population.sort( new  Individual.FitnessComparatorDecreasing());
         return new ArrayList<>(population.subList(0, size));
     }
 

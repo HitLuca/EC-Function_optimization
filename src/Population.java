@@ -13,8 +13,6 @@ public class Population {
     private ArrayList<Individual> population;
     private int size;
 
-
-
     private double meanFitness;
     private double worstFitness;
     private double bestFitness;
@@ -85,7 +83,7 @@ public class Population {
             }
         }
 
-        System.out.println();
+        System.out.println("Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness );
     }
 
 

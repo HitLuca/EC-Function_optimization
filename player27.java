@@ -8,6 +8,7 @@ import src.components.SurvivalBestFitness;
 
 import java.util.Random;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class player27 implements ContestSubmission
 {
@@ -58,9 +59,12 @@ public class player27 implements ContestSubmission
 		Population population = new Population(populationSize, evaluation_);
 
 
-		GA ga = new GA(population, new SurvivalBestFitness((int)(0.8*populationSize)),
-				new SelectionBestFitness((int) (0.4*populationSize)), new CrossoverAverage(),
-				new MutationGaussian(), evaluation_, epochs);
+		GA ga = new GA(population, 
+				new SelectionBestFitness((int) (0.4*populationSize)),
+				new CrossoverAverage(),
+				new MutationGaussian(),
+				new SurvivalBestFitness((int)(populationSize)),
+				evaluation_, epochs);
 
 		ga.run();
 //

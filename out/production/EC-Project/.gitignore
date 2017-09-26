@@ -1,6 +1,12 @@
+.idea/
+!.idea/libraries/*
+!.idea/artifacts/*
+!.idea/modules.xml
+!.idea/misc.xml
+!.idea/vcs.xml
 
-\.idea/
+out/
+tmp/
+player27\.class
 
-assignmentfiles_2017/\.metadata/
-
-assignmentfiles_2017/out/
+submission\.jar

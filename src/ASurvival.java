@@ -2,9 +2,6 @@ package src;
 
 import java.util.ArrayList;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
 public abstract class ASurvival {
 
     private int size;

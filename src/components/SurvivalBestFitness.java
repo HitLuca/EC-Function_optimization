@@ -8,9 +8,6 @@ import src.Population;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
 public class SurvivalBestFitness extends ASurvival {
 
     public SurvivalBestFitness(int size) {

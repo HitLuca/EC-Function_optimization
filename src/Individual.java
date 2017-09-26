@@ -7,9 +7,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
 public class Individual {
 
     static public class FitnessComparator implements Comparator<Individual>

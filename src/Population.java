@@ -3,12 +3,7 @@ package src;
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
 public class Population {
     private ArrayList<Individual> population;
     private int size;
@@ -46,10 +41,10 @@ public class Population {
         return selection.select(population, size);
     }
 
-    public void reproduce(ArrayList<Individual> parents, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
+    public void reproduce(ArrayList<Individual> parents, int parentsNumber, ACrossover crossover, AMutation mutation, ContestEvaluation evaluation)
     {
 
-        population.addAll(crossover.crossover(parents, mutation, evaluation));
+        population.addAll(crossover.crossover(parentsNumber, parents, mutation, evaluation));
 
     }
 

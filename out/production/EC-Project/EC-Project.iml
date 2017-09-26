@@ -11,5 +11,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="EC-Project" level="project" />
     <orderEntry type="library" name="contest" level="project" />
+    <orderEntry type="library" name="EC-Project1" level="project" />
   </component>
 </module>

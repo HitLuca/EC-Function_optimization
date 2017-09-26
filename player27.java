@@ -1,10 +1,7 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import src.*;
-import src.components.CrossoverAverage;
-import src.components.MutationGaussian;
-import src.components.SelectionBestFitness;
-import src.components.SurvivalBestFitness;
+import src.components.*;
 
 import java.util.Random;
 import java.util.Properties;
@@ -55,15 +52,17 @@ public class player27 implements ContestSubmission
 		printProperties(evaluation_);
 		// Run your algorithm here
 		int populationSize = 100;
-		int epochs = 100;
+		int epochs = 150;
 		Population population = new Population(populationSize, evaluation_);
 
+		int parentsNumber = 2;
 
 		GA ga = new GA(population,
 				new SelectionBestFitness((int) (0.4*populationSize)),
+				parentsNumber,
 				new CrossoverAverage(),
 				new MutationGaussian(),
-				new SurvivalBestFitness((int)(populationSize)),
+				new SurvivalBestFitness(populationSize),
 				evaluation_, epochs);
 
 		ga.run();

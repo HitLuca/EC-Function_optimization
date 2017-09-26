@@ -5,9 +5,6 @@ import src.Individual;
 
 import java.util.ArrayList;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
 public class SelectionBestFitness extends ASelection {
     public SelectionBestFitness(int size) {
         super(size);

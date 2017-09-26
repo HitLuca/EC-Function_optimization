@@ -3,9 +3,7 @@ package src;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-/**
- * Created by Недко on 21.9.2017 г..
- */
+
 public abstract class ASelection {
     private int size;
     public ASelection(int size) {

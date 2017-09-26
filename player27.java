@@ -5,7 +5,6 @@ import src.components.*;
 
 import java.util.Random;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class player27 implements ContestSubmission
 {
@@ -57,10 +56,10 @@ public class player27 implements ContestSubmission
 
 		Population population = new Population(populationSize, evaluation_);
 
-		GA ga = new GA(population,
+		GenerationalGA ga = new GenerationalGA(population,
 				new SelectionFitnessProportional(parentsNumber),
 				elitism,
-				new CrossoverAverageWeighted(),
+				new CrossoverTwoPoints(),
 				new MutationGaussian(0.1, mutationProbability),
 				new SurvivalBestFitness(populationSize),
 				evaluation_, epochs);

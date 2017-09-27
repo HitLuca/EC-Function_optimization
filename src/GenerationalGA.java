@@ -47,7 +47,6 @@ public class GenerationalGA {
                 mutation.mutate(children);
                 newPopulation.addIndividuals(children);
             }
-            mutation.mutate(newPopulation.getIndividuals());
             newPopulation.evaluateFitness(evaluation);
             population = newPopulation;
             population.updateStatistics();

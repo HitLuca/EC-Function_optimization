@@ -37,20 +37,24 @@ public class GenerationalGA {
 
     public void run()
     {
-        for(int i=0; i<epochs; i++) {
-            Population newPopulation = new Population(population.getMaxSize());
-            population.sortIndividuals();
-            newPopulation.addIndividuals(population.getElites(elitism));
-            while (newPopulation.getCurrentSize() < population.getMaxSize()) {
-                ArrayList<Individual> parents = selection.select(population.getIndividuals());
-                ArrayList<Individual> children = crossover.crossover(parents);
-                mutation.mutate(children);
-                newPopulation.addIndividuals(children);
+        try {
+            for (int epoch = 0; epoch < epochs; epoch++) {
+                Population newPopulation = new Population(population.getMaxSize());
+                population.sortIndividuals();
+                newPopulation.addIndividuals(population.getElites(elitism));
+                while (newPopulation.getCurrentSize() < population.getMaxSize()) {
+                    ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                    ArrayList<Individual> children = crossover.crossover(parents);
+                    mutation.mutate(children);
+                    newPopulation.addIndividuals(children);
+                }
+                newPopulation.evaluateFitness(evaluation);
+                newPopulation.updateStatistics();
+                population = newPopulation;
+                System.out.println("Epoch " + epoch + " " + population.getStatistics());
             }
-            newPopulation.evaluateFitness(evaluation);
-            population = newPopulation;
-            population.updateStatistics();
-            System.out.println(population.getStatistics());
+        } catch (NullPointerException e) {
+
         }
     }
 }

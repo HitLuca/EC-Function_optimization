@@ -88,7 +88,7 @@ public class Population {
     }
 
     public void sortIndividuals() {
-        population.sort(new Individual.FitnessComparator());
+        population.sort(new Individual.FitnessComparator().reversed());
     }
 
     public ArrayList<Individual> getElites(int elitism) {

@@ -5,6 +5,9 @@ import org.vu.contest.ContestEvaluation;
 import java.util.ArrayList;
 
 public class Population {
+    public static final int BASE_GENOME_SIZE = 10;
+    public static  int FULL_GENOME_SIZE = BASE_GENOME_SIZE;
+
     private ArrayList<Individual> population;
     private int maxSize;
 
@@ -13,12 +16,29 @@ public class Population {
     private double bestFitness = -1;
     private double variance = -1;
 
+    //region Constructors
     public Population(int maxSize) {
         this.maxSize = maxSize;
         population = new ArrayList<>();
     }
 
+    public Population(int maxSize, int genomeSize) {
+        this(maxSize);
+
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+    }
+
     public Population(int maxSize, ContestEvaluation evaluation) {
+        this.maxSize = maxSize;
+        population = new ArrayList<>();
+        initialize(evaluation);
+    }
+
+    public Population(int maxSize, ContestEvaluation evaluation, int genomeSize) {
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+
         this.maxSize = maxSize;
         population = new ArrayList<>();
         initialize(evaluation);
@@ -29,11 +49,21 @@ public class Population {
         this.population = population;
     }
 
+    public Population(ArrayList<Individual> population, int genomeSize) {
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+
+        this.maxSize = population.size();
+        this.population = population;
+    }
+
     protected void initialize(ContestEvaluation evaluation) {
         for(int i=0; i<maxSize; i++) {
             population.add(new Individual(evaluation));
         }
     }
+
+    //endregion
 
     public void updateStatistics() {
         meanFitness = 0;

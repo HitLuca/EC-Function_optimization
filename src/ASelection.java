@@ -4,19 +4,14 @@ import java.util.ArrayList;
 
 
 public abstract class ASelection {
-    private int size;
-    public ASelection(int size) {
-            this.size=size;
+    protected int parentsNumber;
+    public ASelection(int parentsNumber) {
+            this.parentsNumber=parentsNumber;
     }
 
-    public ArrayList<Individual> select(ArrayList<Individual> population)
-    {
-        return select(population, size);
-    }
-
-    public abstract ArrayList<Individual> select(ArrayList<Individual> population, int size);
+    public abstract ArrayList<Individual> select(ArrayList<Individual> population);
 
     public int getSize() {
-        return size;
+        return parentsNumber;
     }
 }

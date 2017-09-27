@@ -52,17 +52,19 @@ public class player27 implements ContestSubmission
 		int epochs = -1;
 		int parentsNumber = 2;
 		int elitism = 3;
-		double mutationProbability = 0.7;
+		int replacementNumber = 10;
+		double mutationProbability = 0.6;
 
 		Population population = new Population(populationSize, evaluation_);
 
-		GenerationalGA ga = new GenerationalGA(population,
-				new SelectionFitnessProportional(parentsNumber),
-				elitism,
-				new CrossoverTwoPoints(),
+		AGA ga = new SteadyStateGA(population,
+				new SelectionFitnessProportional(parentsNumber, true),
+				new CrossoverAverage(),
 				new MutationGaussian(0.1, mutationProbability),
 				new SurvivalBestFitness(populationSize),
-				evaluation_, epochs);
+				evaluation_,
+				epochs,
+				replacementNumber);
 
 		ga.run();
 	}

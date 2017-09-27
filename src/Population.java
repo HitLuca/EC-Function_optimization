@@ -8,10 +8,10 @@ public class Population {
     private ArrayList<Individual> population;
     private int maxSize;
 
-    private double meanFitness = 0;
-    private double worstFitness = 0;
-    private double bestFitness = 0;
-    private double variance = 0;
+    private double meanFitness = -1;
+    private double worstFitness = -1;
+    private double bestFitness = -1;
+    private double variance = -1;
 
     public Population(int maxSize) {
         this.maxSize = maxSize;

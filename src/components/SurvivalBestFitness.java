@@ -13,7 +13,8 @@ public class SurvivalBestFitness extends ASurvival {
 
     @Override
     public ArrayList<Individual> survival(ArrayList<Individual> population, int size) {
-        population.sort( new  Individual.FitnessComparatorDecreasing());
+        population.sort(new Individual.FitnessComparator().reversed());
+
         return new ArrayList<>(population.subList(0, size));
     }
 

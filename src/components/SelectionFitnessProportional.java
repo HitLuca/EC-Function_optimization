@@ -7,13 +7,22 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SelectionFitnessProportional extends ASelection {
+    private boolean windowing;
 
-    public SelectionFitnessProportional(int size) {
+    public SelectionFitnessProportional(int size, boolean windowing) {
         super(size);
+        this.windowing = windowing;
     }
 
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> population, int size) {
+    public ArrayList<Individual> select(ArrayList<Individual> population) {
+        double worstFitness = 0;
+
+        if(windowing) {
+            population.sort(new Individual.FitnessComparator());
+            worstFitness = population.get(0).getFitness();
+        }
+
         ArrayList<Individual> selectedIndividuals = new ArrayList<>();
         Random rng = new Random();
 
@@ -22,10 +31,13 @@ public class SelectionFitnessProportional extends ASelection {
             totalWeight += i.getFitness();
         }
 
-        for(int i=0; i<size; i++) {
+        totalWeight -= population.size() * worstFitness;
+
+        for(int i=0; i<parentsNumber; i++) {
             double randomValue = rng.nextDouble() * totalWeight;
             for(int j=0; j<population.size(); j++) {
                 randomValue -= population.get(j).getFitness();
+                randomValue += worstFitness;
                 if (randomValue <=0) {
                     selectedIndividuals.add(population.get(j));
                     break;
@@ -33,7 +45,7 @@ public class SelectionFitnessProportional extends ASelection {
             }
         }
 
-        assert selectedIndividuals.size() == size;
+        assert selectedIndividuals.size() == parentsNumber;
         return selectedIndividuals;
     }
 }

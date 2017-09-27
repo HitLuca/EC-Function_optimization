@@ -20,15 +20,6 @@ public class Individual {
         }
     }
 
-    static public class FitnessComparatorDecreasing implements Comparator<Individual> {
-        Individual.FitnessComparator cmp = new Individual.FitnessComparator();
-
-        @Override
-        public int compare(Individual a, Individual b) {
-            return -cmp.compare(a,b);
-        }
-    }
-
     public static final int GENOME_SIZE = 10;
     public static int objectCount = 0;
 

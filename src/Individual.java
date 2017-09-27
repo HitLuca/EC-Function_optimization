@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
+import static src.Population.BASE_GENOME_SIZE;
+import static src.Population.FULL_GENOME_SIZE;
+
 public class Individual {
     static public class FitnessComparator implements Comparator<Individual> {
         // Used for sorting in ascending order
@@ -20,7 +23,6 @@ public class Individual {
         }
     }
 
-    public static final int GENOME_SIZE = 10;
     public static int objectCount = 0;
 
     private double genome[];
@@ -35,21 +37,19 @@ public class Individual {
         objectCount++;
         id = objectCount;
 
-        genome = new double[GENOME_SIZE];
+        genome = new double[FULL_GENOME_SIZE];
         Random rnd = new Random();
-        for (int i=0; i<GENOME_SIZE; i++)
+        for (int i = 0; i< FULL_GENOME_SIZE; i++)
             genome[i] = rnd.nextDouble() * (max-min) + min;
 
-        fitness = (double) evaluation.evaluate(genome);
-        isEvaluated = true;
+        evaluate(evaluation, genome);
     }
 
     public Individual(double genome[], ContestEvaluation evaluation) {
         objectCount++;
         id = objectCount;
         this.genome = genome;
-        fitness = (double) evaluation.evaluate(genome);
-        isEvaluated = true;
+        evaluate(evaluation, genome);
     }
 
     public Individual(double genome[]) {
@@ -63,8 +63,12 @@ public class Individual {
     }
 
     public void evaluate(ContestEvaluation evaluation) {
+        evaluate(evaluation, genome);
+    }
+
+    public void evaluate(ContestEvaluation evaluation, double[] genome) {
         if(!isEvaluated) {
-            this.fitness = (double) evaluation.evaluate(genome);
+            this.fitness = (double) evaluation.evaluate(Arrays.copyOfRange(genome, 0, BASE_GENOME_SIZE));
             isEvaluated = true;
         }
     }

@@ -44,29 +44,37 @@ public class player27 implements ContestSubmission
         }
     }
     
-	public void run()
-	{
+	public void run() {
 		printProperties(evaluation_);
 		// Run your algorithm here
-		int populationSize = 100;
+		int populationSize = 150;
 		int epochs = -1;
 		int parentsNumber = 2;
-		int elitism = 3;
+		int elitism = 1;
 		int replacementNumber = 10;
-		double mutationProbability = 0.6;
+		double mutationProbability = 1;
+
+//		String loggerFile = "./home/luca/a.txt";
+//
+//		PopulationLogger logger = null;
+//		try {
+//			logger = new PopulationLogger(loggerFile);
+//			logger.writeHeader();
+//		} catch (Exception e) {e.printStackTrace();}
 
 		Population population = new Population(populationSize, evaluation_);
 
-		AGA ga = new SteadyStateGA(population,
-				new SelectionFitnessProportional(parentsNumber, true),
+		AGA ga = new GenerationalGA(population,
+				new SelectionLinearRanking(parentsNumber, 2),
 				new CrossoverAverage(),
 				new MutationGaussian(0.1, mutationProbability),
 				new SurvivalBestFitness(populationSize),
 				evaluation_,
 				epochs,
-				replacementNumber);
+				elitism);
 
-		ga.run();
+//		ga.addLogger(logger);
+		try {ga.run();} catch (Exception e) {e.printStackTrace();}
 	}
 
 	public void printProperties(ContestEvaluation evaluation)

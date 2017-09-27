@@ -56,7 +56,8 @@ public class Population {
     }
 
     public String getStatistics() {
-        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
+        return meanFitness + ", " + bestFitness + ", " + worstFitness;
+//        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
     }
 
     public static void printPopulation(ArrayList<Individual> population) {
@@ -93,5 +94,21 @@ public class Population {
 
     public ArrayList<Individual> getElites(int elitism) {
         return new ArrayList<>(population.subList(0, elitism));
+    }
+
+    public double getMeanFitness() {
+        return meanFitness;
+    }
+
+    public double getWorstFitness() {
+        return worstFitness;
+    }
+
+    public double getBestFitness() {
+        return bestFitness;
+    }
+
+    public double getVariance() {
+        return variance;
     }
 }

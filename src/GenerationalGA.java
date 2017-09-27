@@ -2,6 +2,7 @@ package src;
 
 import org.vu.contest.ContestEvaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -14,10 +15,11 @@ public class GenerationalGA extends AGA {
         this.elitism = elitism;
     }
 
-    public void run()
-    {
+    public void run() throws IOException {
+        int epoch = 0;
         try {
-            for (int epoch = 0; epoch < epochs; epoch++) {
+            for (epoch = 0; epoch < epochs; epoch++) {
+//                logger.logPopulation(epoch, population);
                 Population newPopulation = new Population(population.getMaxSize());
                 population.sortIndividuals();
                 newPopulation.addIndividuals(population.getElites(elitism));
@@ -30,10 +32,10 @@ public class GenerationalGA extends AGA {
                 newPopulation.evaluateFitness(evaluation);
                 newPopulation.updateStatistics();
                 population = newPopulation;
-                System.out.println("Epoch " + epoch + " " + population.getStatistics());
+                System.out.println(epoch + " " + population.getStatistics());
             }
         } catch (NullPointerException e) {
-
+//            logger.logPopulation(epoch, population);
         }
     }
 }

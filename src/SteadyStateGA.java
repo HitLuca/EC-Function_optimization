@@ -2,6 +2,7 @@ package src;
 
 import org.vu.contest.ContestEvaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SteadyStateGA extends AGA {
@@ -12,7 +13,7 @@ public class SteadyStateGA extends AGA {
         this.replacementNumber = replacementNumber;
     }
 
-    public void run()
+    public void run() throws IOException
     {
         try {
             for (int epoch = 0; epoch < epochs; epoch++) {

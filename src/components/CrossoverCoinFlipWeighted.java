@@ -6,12 +6,15 @@ import src.Individual;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static src.Population.BASE_GENOME_SIZE;
+import static src.Population.FULL_GENOME_SIZE;
+
 public class CrossoverCoinFlipWeighted extends ACrossover {
     @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
         ArrayList<Individual> children = new ArrayList<>();
 
-        double[] childGenome = new double[Individual.GENOME_SIZE];
+        double[] childGenome = new double[FULL_GENOME_SIZE];
         Random rnd = new Random();
 
         double[] ratio = new double[parents.size()];
@@ -22,7 +25,7 @@ public class CrossoverCoinFlipWeighted extends ACrossover {
             ratio[i] = tot;
         }
 
-        for(int i=0; i<Individual.GENOME_SIZE; i++) {
+        for(int i = 0; i<BASE_GENOME_SIZE; i++) {
             double t = rnd.nextDouble()*tot;
             for (int j=0; j<parents.size(); j++) {
                 if (ratio[j] >= t) {
@@ -32,6 +35,7 @@ public class CrossoverCoinFlipWeighted extends ACrossover {
             }
         }
 
+        childGenome = averageExtraGenome(childGenome, parents);
         children.add(new Individual(childGenome));
         return children;
     }

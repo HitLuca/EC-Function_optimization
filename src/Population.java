@@ -5,6 +5,9 @@ import org.vu.contest.ContestEvaluation;
 import java.util.ArrayList;
 
 public class Population {
+    public static final int BASE_GENOME_SIZE = 10;
+    public static  int FULL_GENOME_SIZE = BASE_GENOME_SIZE;
+
     private ArrayList<Individual> population;
     private int maxSize;
 
@@ -13,13 +16,24 @@ public class Population {
     private double bestFitness = -1;
     private double variance = -1;
 
+<<<<<<< HEAD
     private int stagnancyLevel = 0;
     private int stagnancyThreshold = 0;
     private double epurationDegree = 0;
 
+=======
+    //region Constructors
+>>>>>>> origin/master
     public Population(int maxSize) {
         this.maxSize = maxSize;
         population = new ArrayList<>();
+    }
+
+    public Population(int maxSize, int genomeSize) {
+        this(maxSize);
+
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
     }
 
     public Population(int maxSize, ContestEvaluation evaluation) {
@@ -28,12 +42,22 @@ public class Population {
         initialize(evaluation);
     }
 
+<<<<<<< HEAD
     public Population(int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree) {
         this.maxSize = maxSize;
         population = new ArrayList<Individual>();
         initialize(evaluation);
         this.stagnancyThreshold = stagnancyThreshold;
         this.epurationDegree = epurationDegree;
+=======
+    public Population(int maxSize, ContestEvaluation evaluation, int genomeSize) {
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+
+        this.maxSize = maxSize;
+        population = new ArrayList<>();
+        initialize(evaluation);
+>>>>>>> origin/master
     }
 
     public Population(ArrayList<Individual> population) {
@@ -41,8 +65,17 @@ public class Population {
         this.population = population;
     }
 
+<<<<<<< HEAD
     public void renewPopulation(ArrayList<Individual> newPopulation){
         population = newPopulation;
+=======
+    public Population(ArrayList<Individual> population, int genomeSize) {
+        if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+
+        this.maxSize = population.size();
+        this.population = population;
+>>>>>>> origin/master
     }
 
     protected void initialize(ContestEvaluation evaluation) {
@@ -50,6 +83,8 @@ public class Population {
             population.add(new Individual(evaluation));
         }
     }
+
+    //endregion
 
     public void updateStatistics() {
         meanFitness = 0;
@@ -72,7 +107,8 @@ public class Population {
     }
 
     public String getStatistics() {
-        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
+        return meanFitness + ", " + bestFitness + ", " + worstFitness;
+//        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
     }
 
     public static void printPopulation(ArrayList<Individual> population) {
@@ -115,6 +151,7 @@ public class Population {
         return new ArrayList<>(population.subList(0, elitism));
     }
 
+<<<<<<< HEAD
     public void epuration(double epurationDegree){
         sortIndividuals();
         population = new ArrayList<>(population.subList(0, maxSize - (int)(maxSize * epurationDegree)));
@@ -135,5 +172,21 @@ public class Population {
                 population.add(new Individual(evaluation));
             }
         }
+=======
+    public double getMeanFitness() {
+        return meanFitness;
+    }
+
+    public double getWorstFitness() {
+        return worstFitness;
+    }
+
+    public double getBestFitness() {
+        return bestFitness;
+    }
+
+    public double getVariance() {
+        return variance;
+>>>>>>> origin/master
     }
 }

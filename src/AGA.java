@@ -2,6 +2,7 @@ package src;
 
 import org.vu.contest.ContestEvaluation;
 
+import java.io.IOException;
 import java.util.Properties;
 
 public abstract class AGA {
@@ -12,6 +13,7 @@ public abstract class AGA {
     protected AMutation mutation;
     protected ContestEvaluation evaluation;
     protected int epochs;
+    protected PopulationLogger logger;
 
     public AGA(Population population, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
         this.population = population;
@@ -31,5 +33,9 @@ public abstract class AGA {
         }
     }
 
-    public abstract void run();
+    public void addLogger(PopulationLogger logger) {
+        this.logger = logger;
+    }
+
+    public abstract void run() throws IOException;
 }

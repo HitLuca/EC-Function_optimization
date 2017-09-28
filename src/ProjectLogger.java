@@ -10,9 +10,9 @@ public class ProjectLogger {
         Runtime run = Runtime.getRuntime();
         Random rng = new Random();
 
-        String function = "BentCigarFunction";
+//        String function = "BentCigarFunction";
 //        String function = "SchaffersEvaluation";
-//        String function = "KaatsuraEvaluation";
+        String function = "KaatsuraEvaluation";
 
         String outputPath = "logs/output.log";
 
@@ -20,10 +20,11 @@ public class ProjectLogger {
         logger = new BufferedWriter(fileWriter);
         writeHeader();
 
-        run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
+        Process pr = run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
+        pr.waitFor();
 
-        Process pr = run.exec("java -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=" + rng.nextInt() + ">" + outputPath);
-
+        pr = run.exec("java -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
+        pr.waitFor();
         BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line;
 

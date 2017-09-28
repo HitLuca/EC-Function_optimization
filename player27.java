@@ -24,6 +24,8 @@ public class player27 implements ContestSubmission
 	private String algorithmType;
 
 	private int populationSize;
+	private int stagnancyThreshold;
+	private double epurationDegree;
 	private int epochs;
 	private int elitism;
 	private int replacementNumber;
@@ -104,6 +106,9 @@ public class player27 implements ContestSubmission
 		algorithmType = "SteadyState";
 
 		populationSize = 150;
+		stagnancyThreshold = 15;
+		epurationDegree = 0.5;
+
 		epochs = 1;
 		elitism = 1;
 		replacementNumber = 10;
@@ -123,6 +128,8 @@ public class player27 implements ContestSubmission
 		switch(algorithmType) {
 			case "Generational": {
 				ga = new GenerationalGA(populationSize,
+					stagnancyThreshold,
+					epurationDegree,
 					selection,
 					crossover,
 					mutation,
@@ -134,6 +141,8 @@ public class player27 implements ContestSubmission
 			}
 			case "SteadyState": {
 				ga = new SteadyStateGA(populationSize,
+						stagnancyThreshold,
+						epurationDegree,
 						selection,
 						crossover,
 						mutation,
@@ -154,6 +163,8 @@ public class player27 implements ContestSubmission
 		System.out.println("Properties:");
 		System.out.println("algorithmType=" + ga);
 		System.out.println("populationSize=" + populationSize);
+		System.out.println("stagnancyThreshold=" + stagnancyThreshold);
+		System.out.println("epurationDegree=" + epurationDegree);
 		System.out.println("epochs=" + epochs);
 		System.out.println("elitism=" + elitism);
 		System.out.println("replacementNumber=" + replacementNumber);

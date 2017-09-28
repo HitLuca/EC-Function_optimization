@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class SteadyStateGA extends AGA {
     private int replacementNumber;
 
-    public SteadyStateGA(int populationSize, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int replacementNumber) {
-        super(populationSize, selection, crossover, mutation, survival, evaluation, epochs);
+    public SteadyStateGA(int populationSize, int stagnancyThreshold, double epurationDegree, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int replacementNumber) {
+        super(populationSize, stagnancyThreshold, epurationDegree, selection, crossover, mutation, survival, evaluation, epochs);
         this.replacementNumber = replacementNumber;
     }
 

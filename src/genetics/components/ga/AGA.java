@@ -19,8 +19,8 @@ public abstract class AGA {
     protected ContestEvaluation evaluation;
     protected int epochs;
 
-    public AGA(int populationSize, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
-        this.population = new Population(populationSize, evaluation);
+    public AGA(int populationSize, int stagnancyThreshold, double epurationDegree, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
+        this.population = new Population(populationSize, evaluation, stagnancyThreshold, epurationDegree);
         this.survival = survival;
         this.crossover = crossover;
         this.selection = selection;

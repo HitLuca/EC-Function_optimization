@@ -14,8 +14,8 @@ public class GenerationalGA extends AGA {
 
     private int elitism;
 
-    public GenerationalGA(int populationSize, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
-        super(populationSize, selection, crossover, mutation, survival, evaluation, epochs);
+    public GenerationalGA(int populationSize, int stagnancyThreshold, double epurationDegree, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
+        super(populationSize, stagnancyThreshold, epurationDegree, selection, crossover, mutation, survival, evaluation, epochs);
         this.elitism = elitism;
     }
 

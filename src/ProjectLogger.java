@@ -22,8 +22,7 @@ public class ProjectLogger {
 
         run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
 
-        Process pr = run.exec("java -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=" + rng.nextInt());
-        pr.waitFor();
+        Process pr = run.exec("java -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=" + rng.nextInt() + ">" + outputPath);
 
         BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line;

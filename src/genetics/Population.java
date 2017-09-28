@@ -149,7 +149,7 @@ public class Population {
     public void epuration(double epurationDegree){
         sortIndividuals();
         population = new ArrayList<>(population.subList(0, maxSize - (int)(maxSize * epurationDegree)));
-        System.out.println("Epuration enacted, purged individuals: " + (int)(maxSize * epurationDegree));
+//        System.out.println("Epuration enacted, purged individuals: " + (int)(maxSize * epurationDegree));
     }
 
     public void checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation) {

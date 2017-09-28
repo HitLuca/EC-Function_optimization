@@ -22,24 +22,21 @@ public class GenerationalGA extends AGA {
     public void run() throws IOException {
         int epoch;
         System.out.println("Scores:");
-        System.out.println("epoch, mean fitness, best fitness, worst fitness");
+//        System.out.println("epoch, mean fitness, best fitness, worst fitness");
 
-        try {
-            for (epoch = 0; epoch < epochs; epoch++) {
-                Population newPopulation = new Population(population.getMaxSize());
-                population.sortIndividuals();
-                newPopulation.addIndividuals(population.getElites(elitism));
-                while (newPopulation.getCurrentSize() < population.getMaxSize()) {
-                    ArrayList<Individual> parents = selection.select(population.getIndividuals());
-                    ArrayList<Individual> children = crossover.crossover(parents);
-                    mutation.mutate(children);
-                    newPopulation.addIndividuals(children);
-                }
-                population.renewPopulation(newPopulation.getIndividuals());
-                population.evaluateFitness(evaluation);
-                System.out.println(epoch + ", " + population.getStatistics());
+        for (epoch = 0; epoch < epochs; epoch++) {
+            Population newPopulation = new Population(population.getMaxSize());
+            population.sortIndividuals();
+            newPopulation.addIndividuals(population.getElites(elitism));
+            while (newPopulation.getCurrentSize() < population.getMaxSize()) {
+                ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                ArrayList<Individual> children = crossover.crossover(parents);
+                mutation.mutate(children);
+                newPopulation.addIndividuals(children);
             }
-        } catch (NullPointerException e) {
+            population.renewPopulation(newPopulation.getIndividuals());
+            population.evaluateFitness(evaluation);
+            System.out.println(epoch + ", " + population.getStatistics());
         }
         System.out.println("EndScores\n");
     }

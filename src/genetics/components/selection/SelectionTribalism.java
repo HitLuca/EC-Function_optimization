@@ -1,8 +1,7 @@
-package src.components;
+package src.genetics.components.selection;
 
-import javafx.scene.Parent;
-import src.ASelection;
-import src.Individual;
+import src.genetics.Individual;
+import src.genetics.Population;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -80,7 +79,7 @@ public class SelectionTribalism extends ASelection {
 
     private double parentsDistance(Individual ind1, Individual ind2) {
         double distance = 0.0;
-        for (int i = 0; i < Individual.GENOME_SIZE; i++) {
+        for (int i = 0; i < Population.BASE_GENOME_SIZE; i++) {
             distance += Math.pow(ind1.getGenome()[i] - ind2.getGenome()[i], 2);
         }
         return Math.sqrt(distance);

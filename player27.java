@@ -77,7 +77,8 @@ public class player27 implements ContestSubmission
 		loadProperties();
 		printAlgorithmProperties();
 
-		try {ga.run();} catch (Exception e) {e.printStackTrace();}
+		try {ga.run();} catch (Exception e) {
+			System.err.println(e.getMessage());}
 	}
 
 	public void printProperties(ContestEvaluation evaluation)
@@ -99,11 +100,11 @@ public class player27 implements ContestSubmission
 	}
 
 	private void loadProperties() {
-		algorithmType = "Generational";
-//		algorithmType = "SteadyState";
+//		algorithmType = "Generational";
+		algorithmType = "SteadyState";
 
 		populationSize = 150;
-		epochs = -1;
+		epochs = 1;
 		elitism = 1;
 		replacementNumber = 10;
 

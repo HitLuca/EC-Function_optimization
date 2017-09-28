@@ -21,8 +21,7 @@ public class SteadyStateGA extends AGA {
     public void run() throws IOException
     {
         System.out.println("Scores:");
-        System.out.println("epoch, mean fitness, best fitness, worst fitness");
-
+//        System.out.println("epoch, mean fitness, best fitness, worst fitness");
         try {
             for (int epoch = 0; epoch < epochs; epoch++) {
                 while (population.getCurrentSize() < population.getMaxSize() + replacementNumber) {
@@ -35,7 +34,9 @@ public class SteadyStateGA extends AGA {
                 population.renewPopulation(survival.survival(population.getIndividuals(), population.getMaxSize()));
                 System.out.println(epoch + ", " + population.getStatistics());
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
+            System.out.println("EndScores\n");
+            throw e;
         }
         System.out.println("EndScores\n");
     }

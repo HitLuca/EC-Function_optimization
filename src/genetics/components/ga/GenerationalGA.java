@@ -35,9 +35,8 @@ public class GenerationalGA extends AGA {
                     mutation.mutate(children);
                     newPopulation.addIndividuals(children);
                 }
-                newPopulation.evaluateFitness(evaluation);
-                newPopulation.updateStatistics();
-                population = newPopulation;
+                population.renewPopulation(newPopulation.getIndividuals());
+                population.evaluateFitness(evaluation);
                 System.out.println(epoch + ", " + population.getStatistics());
             }
         } catch (NullPointerException e) {

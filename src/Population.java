@@ -13,6 +13,10 @@ public class Population {
     private double bestFitness = -1;
     private double variance = -1;
 
+    private int stagnancyLevel = 0;
+    private int stagnancyThreshold = 0;
+    private double epurationDegree = 0;
+
     public Population(int maxSize) {
         this.maxSize = maxSize;
         population = new ArrayList<>();
@@ -24,9 +28,21 @@ public class Population {
         initialize(evaluation);
     }
 
+    public Population(int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree) {
+        this.maxSize = maxSize;
+        population = new ArrayList<Individual>();
+        initialize(evaluation);
+        this.stagnancyThreshold = stagnancyThreshold;
+        this.epurationDegree = epurationDegree;
+    }
+
     public Population(ArrayList<Individual> population) {
         this.maxSize = population.size();
         this.population = population;
+    }
+
+    public void renewPopulation(ArrayList<Individual> newPopulation){
+        population = newPopulation;
     }
 
     protected void initialize(ContestEvaluation evaluation) {
@@ -85,6 +101,10 @@ public class Population {
         for(Individual i:population) {
             i.evaluate(evaluation);
         }
+
+        double old_best = bestFitness;
+        updateStatistics();
+        checkStagnancy(old_best, bestFitness, evaluation);
     }
 
     public void sortIndividuals() {
@@ -93,5 +113,27 @@ public class Population {
 
     public ArrayList<Individual> getElites(int elitism) {
         return new ArrayList<>(population.subList(0, elitism));
+    }
+
+    public void epuration(double epurationDegree){
+        sortIndividuals();
+        population = new ArrayList<>(population.subList(0, maxSize - (int)(maxSize * epurationDegree)));
+        System.out.println("Epuration enacted, purged individuals: " + (int)(maxSize * epurationDegree));
+    }
+
+    public void checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation){
+
+        if (stagnancyThreshold == 0) return;
+
+        if (newBest > oldBest) stagnancyLevel = 0;
+        else stagnancyLevel++;
+
+        if (stagnancyLevel > stagnancyThreshold){
+            epuration(epurationDegree);
+            stagnancyLevel = 0;
+            while(population.size()<maxSize){
+                population.add(new Individual(evaluation));
+            }
+        }
     }
 }

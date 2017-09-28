@@ -23,8 +23,7 @@ public class SteadyStateGA extends AGA {
                     population.addIndividuals(children);
                 }
                 population.evaluateFitness(evaluation);
-                population = new Population(survival.survival(population.getIndividuals(), population.getMaxSize()));
-                population.updateStatistics();
+                population.renewPopulation(survival.survival(population.getIndividuals(), population.getMaxSize()));
                 System.out.println("Epoch " + epoch + " " + population.getStatistics());
             }
         } catch (NullPointerException e) {

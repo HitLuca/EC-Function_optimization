@@ -1,13 +1,12 @@
-package src.components;
+package src.genetics.components.crossover;
 
-import src.ACrossover;
-import src.Individual;
+import src.genetics.Individual;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static src.Population.BASE_GENOME_SIZE;
-import static src.Population.FULL_GENOME_SIZE;
+import static src.genetics.Population.BASE_GENOME_SIZE;
+import static src.genetics.Population.FULL_GENOME_SIZE;
 
 public class CrossoverCoinFlip extends ACrossover {
     @Override

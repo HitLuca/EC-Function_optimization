@@ -1,7 +1,6 @@
-package src.components;
+package src.genetics.components.mutation;
 
-import src.AMutation;
-import src.Individual;
+import src.genetics.Individual;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -11,3 +11,6 @@ player27\.class
 
 submission\.jar
 testrun/submission\.jar
+
+logs/*
+.ipynb_checkpoints/

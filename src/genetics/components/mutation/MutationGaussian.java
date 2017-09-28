@@ -1,18 +1,17 @@
-package src.components;
+package src.genetics.components.mutation;
 
-import src.AMutation;
-import src.Individual;
+import src.genetics.Individual;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MutationUniform extends AMutation {
+public class MutationGaussian extends AMutation {
 
-    private double max;
+    private double sigma;
     double mutationProbability;
 
-    public MutationUniform(double max, double mutationProbability) {
-        this.max = max;
+    public MutationGaussian(double sigma, double mutationProbability) {
+        this.sigma = sigma;
         this.mutationProbability = mutationProbability;
     }
 
@@ -24,7 +23,7 @@ public class MutationUniform extends AMutation {
             if (rng.nextDouble() < mutationProbability) {
                 double[] genome = individual.getGenome();
                 for (int i = 0; i < genome.length; i++) {
-                    genome[i] += (rng.nextDouble() * max * 2) - max;
+                    genome[i] += rng.nextGaussian() * sigma;
                 }
                 individual.setGenome(genome);
             }

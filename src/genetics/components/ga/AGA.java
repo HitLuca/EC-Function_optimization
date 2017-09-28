@@ -1,6 +1,11 @@
-package src;
+package src.genetics.components.ga;
 
 import org.vu.contest.ContestEvaluation;
+import src.genetics.components.mutation.AMutation;
+import src.genetics.components.selection.ASelection;
+import src.genetics.components.survival.ASurvival;
+import src.genetics.Population;
+import src.genetics.components.crossover.ACrossover;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -13,10 +18,9 @@ public abstract class AGA {
     protected AMutation mutation;
     protected ContestEvaluation evaluation;
     protected int epochs;
-    protected PopulationLogger logger;
 
-    public AGA(Population population, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
-        this.population = population;
+    public AGA(int populationSize, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
+        this.population = new Population(populationSize, evaluation);
         this.survival = survival;
         this.crossover = crossover;
         this.selection = selection;
@@ -33,9 +37,10 @@ public abstract class AGA {
         }
     }
 
-    public void addLogger(PopulationLogger logger) {
-        this.logger = logger;
-    }
-
     public abstract void run() throws IOException;
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

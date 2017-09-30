@@ -1,5 +1,6 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
+import src.genetics.CMAEvolutionaryStrategy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.crossover.CrossoverAverage;
 import src.genetics.components.ga.AGA;
@@ -12,6 +13,8 @@ import src.genetics.components.selection.SelectionLinearRanking;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Properties;
 
@@ -39,6 +42,7 @@ public class player27 implements ContestSubmission
 	private ASurvival survival;
 
 	private AGA ga;
+	private CMAEvolutionaryStrategy es;
 
 	public player27()
 	{
@@ -79,8 +83,11 @@ public class player27 implements ContestSubmission
 		loadProperties();
 		printAlgorithmProperties();
 
-		try {ga.run();} catch (Exception e) {
-			System.err.println(e.getMessage());}
+		if(algorithmType.equals("CMA-ES"))
+			es.run(evaluation_, 100);
+		else
+			try {ga.run();} catch (Exception e) {
+				System.err.println(e.getMessage());}
 	}
 
 	public void printProperties(ContestEvaluation evaluation)
@@ -99,11 +106,13 @@ public class player27 implements ContestSubmission
 	{
 		player27 p = new player27();
 		p.run();
+
 	}
 
 	private void loadProperties() {
 //		algorithmType = "Generational";
 		algorithmType = "SteadyState";
+//		algorithmType = "CMA-ES";
 
 		populationSize = 150;
 		stagnancyThreshold = 15;
@@ -152,6 +161,11 @@ public class player27 implements ContestSubmission
 						replacementNumber);
 				break;
 			}
+
+			case "CMA-ES":
+				es = new CMAEvolutionaryStrategy(1, 10);
+				break;
+
 			default: {
 				System.out.println("Unrecognized algorithm type");
 				break;

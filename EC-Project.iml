@@ -16,5 +16,6 @@
     <orderEntry type="library" name="EC-Project" level="project" />
     <orderEntry type="library" name="contest" level="project" />
     <orderEntry type="library" name="EC-Project1" level="project" />
+    <orderEntry type="library" name="commons-math3-3.6.1" level="project" />
   </component>
 </module>

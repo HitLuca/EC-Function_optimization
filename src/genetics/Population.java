@@ -31,6 +31,8 @@ public class Population {
 
         if(genomeSize>BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
+        else
+            FULL_GENOME_SIZE = genomeSize;
     }
 
     public Population(int maxSize, ContestEvaluation evaluation) {
@@ -49,6 +51,8 @@ public class Population {
 
     public Population(int maxSize, ContestEvaluation evaluation, int genomeSize) {
         if(genomeSize>BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+        else
             FULL_GENOME_SIZE = genomeSize;
 
         this.maxSize = maxSize;

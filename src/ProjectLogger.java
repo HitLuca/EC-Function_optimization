@@ -4,28 +4,28 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class ProjectLogger {
     private static BufferedWriter logger;
 
     public static void main(String args[]) throws IOException, InterruptedException {
         Runtime run = Runtime.getRuntime();
-        Random rng = new Random();
 
 //        String function = "BentCigarFunction";
         String function = "SchaffersEvaluation";
 //        String function = "KatsuuraEvaluation";
 
-        int runsNumber = 4;
+        int runsNumber = 3;
 
-        Date date = new Date() ;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
         String outputPath = "logs/" + dateFormat.format(date) + "_" + function + "/";
         new File(outputPath).mkdir();
 
-        for (int i=0; i<runsNumber; i++) {
+        deleteLastRunFile();
+
+        for (int i = 0; i < runsNumber; i++) {
             String filename = i + ".log";
 
             FileWriter fileWriter = new FileWriter(outputPath + filename);
@@ -40,45 +40,65 @@ public class ProjectLogger {
             BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             String line;
 
-            while ((line = buf.readLine()) !=null )
-            {
+            while ((line = buf.readLine()) != null) {
                 System.out.println(line);
                 logger.write(line + "\n");
             }
             logger.close();
 
-            File source=new File(outputPath + filename);
-            File destination=new File("logs/" + "last_run.log");
+            File source = new File(outputPath + filename);
+            File destination = new File("logs/" + "last_run.log");
 
-            copyFile(source,destination);
+//            copyFile(source,destination);
+            appendFile(source, destination);
         }
 
 
     }
 
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if(!destFile.exists()) {
+        if (!destFile.exists()) {
             destFile.createNewFile();
         }
 
         FileChannel source = null;
         FileChannel destination = null;
         try {
-            source = new RandomAccessFile(sourceFile,"rw").getChannel();
-            destination = new RandomAccessFile(destFile,"rw").getChannel();
+            source = new RandomAccessFile(sourceFile, "rw").getChannel();
+            destination = new RandomAccessFile(destFile, "rw").getChannel();
 
             long position = 0;
-            long count    = source.size();
+            long count = source.size();
 
             source.transferTo(position, count, destination);
-        }
-        finally {
-            if(source != null) {
+        } finally {
+            if (source != null) {
                 source.close();
             }
-            if(destination != null) {
+            if (destination != null) {
                 destination.close();
             }
+        }
+    }
+
+    private static void appendFile(File sourceFile, File destFile) throws IOException {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(destFile, true));
+            BufferedReader in = new BufferedReader(new FileReader(sourceFile));
+            String str;
+            while ((str = in.readLine()) != null) {
+                out.write(str + '\n');
+            }
+            in.close();
+            out.close();
+        } catch (IOException e) {
+        }
+    }
+
+    private static void deleteLastRunFile() {
+        File lastRun = new File("logs/" + "last_run.log");
+        if (lastRun.exists()) {
+            lastRun.delete();
         }
     }
 }

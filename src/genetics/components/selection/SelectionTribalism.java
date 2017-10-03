@@ -10,10 +10,23 @@ public class SelectionTribalism extends ASelection {
     private boolean windowing;
     private double tribeWeight;
 
-    public SelectionTribalism(int size, double tribeWeight, boolean windowing) {
-        super(size);
+    public SelectionTribalism(Random rng, int size, double tribeWeight, boolean windowing) {
+        super(rng, size);
         this.tribeWeight = tribeWeight;
         this.windowing = windowing;
+    }
+
+    // From http://introcs.cs.princeton.edu/java/91float/Gamma.java.html
+    private static double logGamma(double x) {
+        double tmp = (x - 0.5) * Math.log(x + 4.5) - (x + 4.5);
+        double ser = 1.0 + 76.18009173 / (x + 0) - 86.50532033 / (x + 1)
+                + 24.01409822 / (x + 2) - 1.231739516 / (x + 3)
+                + 0.00120858003 / (x + 4) - 0.00000536382 / (x + 5);
+        return tmp + Math.log(ser * Math.sqrt(2 * Math.PI));
+    }
+
+    private static double gamma(double x) {
+        return Math.exp(logGamma(x));
     }
 
     @Override
@@ -29,7 +42,6 @@ public class SelectionTribalism extends ASelection {
         }
 
         ArrayList<Individual> selectedIndividuals = new ArrayList<>();
-        Random rng = new Random();
 
         double totalWeight = 0;
         for (int i = 0; i < population.size(); i++) {
@@ -48,7 +60,7 @@ public class SelectionTribalism extends ASelection {
         }
 
         double[] attractionT;
-        double a,b;
+        double a, b;
         a = 5;
         b = 1;
 
@@ -83,19 +95,6 @@ public class SelectionTribalism extends ASelection {
             distance += Math.pow(ind1.getGenome()[i] - ind2.getGenome()[i], 2);
         }
         return Math.sqrt(distance);
-    }
-
-    // From http://introcs.cs.princeton.edu/java/91float/Gamma.java.html
-    private static double logGamma(double x) {
-        double tmp = (x - 0.5) * Math.log(x + 4.5) - (x + 4.5);
-        double ser = 1.0 + 76.18009173 / (x + 0) - 86.50532033 / (x + 1)
-                + 24.01409822 / (x + 2) - 1.231739516 / (x + 3)
-                + 0.00120858003 / (x + 4) - 0.00000536382 / (x + 5);
-        return tmp + Math.log(ser * Math.sqrt(2 * Math.PI));
-    }
-
-    private static double gamma(double x) {
-        return Math.exp(logGamma(x));
     }
     //
 

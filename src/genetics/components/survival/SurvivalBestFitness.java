@@ -3,11 +3,12 @@ package src.genetics.components.survival;
 import src.genetics.Individual;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SurvivalBestFitness extends ASurvival {
 
-    public SurvivalBestFitness(int size) {
-        super(size);
+    public SurvivalBestFitness(Random rng) {
+        super(rng);
     }
 
     @Override

@@ -3,12 +3,16 @@ package src.genetics.components.selection;
 import src.genetics.Individual;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public abstract class ASelection {
+    protected Random rng;
     protected int parentsNumber;
-    public ASelection(int parentsNumber) {
-            this.parentsNumber=parentsNumber;
+
+    public ASelection(Random rng, int parentsNumber) {
+        this.rng = rng;
+        this.parentsNumber = parentsNumber;
     }
 
     public abstract ArrayList<Individual> select(ArrayList<Individual> population);

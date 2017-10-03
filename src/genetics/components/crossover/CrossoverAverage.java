@@ -3,11 +3,16 @@ package src.genetics.components.crossover;
 import src.genetics.Individual;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static src.genetics.Population.BASE_GENOME_SIZE;
 import static src.genetics.Population.FULL_GENOME_SIZE;
 
 public class CrossoverAverage extends ACrossover {
+
+    public CrossoverAverage(Random rng) {
+        super(rng);
+    }
 
     @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
@@ -22,7 +27,6 @@ public class CrossoverAverage extends ACrossover {
         }
 
         childGenome = averageExtraGenome(childGenome, parents);
-
         children.add(new Individual(childGenome));
         return children;
     }

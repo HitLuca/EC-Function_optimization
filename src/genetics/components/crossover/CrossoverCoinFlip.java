@@ -9,15 +9,18 @@ import static src.genetics.Population.BASE_GENOME_SIZE;
 import static src.genetics.Population.FULL_GENOME_SIZE;
 
 public class CrossoverCoinFlip extends ACrossover {
+    public CrossoverCoinFlip(Random rng) {
+        super(rng);
+    }
+
     @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
         ArrayList<Individual> children = new ArrayList<>();
 
         double[] childGenome = new double[FULL_GENOME_SIZE];
-        Random rnd = new Random();
 
-        for(int i = 0; i<BASE_GENOME_SIZE; i++) {
-            int j = (int) rnd.nextFloat()*parents.size();
+        for (int i = 0; i < BASE_GENOME_SIZE; i++) {
+            int j = (int) rng.nextFloat() * parents.size();
             childGenome[i] = parents.get(j).getGenome()[i];
         }
 

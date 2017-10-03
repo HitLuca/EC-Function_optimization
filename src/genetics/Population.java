@@ -3,10 +3,11 @@ package src.genetics;
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Population {
     public static final int BASE_GENOME_SIZE = 10;
-    public static  int FULL_GENOME_SIZE = BASE_GENOME_SIZE;
+    public static int FULL_GENOME_SIZE = BASE_GENOME_SIZE;
 
     private ArrayList<Individual> population;
     private int maxSize;
@@ -20,81 +21,89 @@ public class Population {
     private int stagnancyThreshold = 0;
     private double epurationDegree = 0;
 
+    private Random rng;
+
     //region Constructors
-    public Population(int maxSize) {
+    public Population(Random rng, int maxSize) {
+        this.rng = rng;
         this.maxSize = maxSize;
         population = new ArrayList<>();
     }
 
-    public Population(int maxSize, int genomeSize) {
-        this(maxSize);
+    public Population(Random rng, int maxSize, int genomeSize) {
+        this(rng, maxSize);
 
-        if(genomeSize>BASE_GENOME_SIZE)
+        if (genomeSize > BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
     }
 
-    public Population(int maxSize, ContestEvaluation evaluation) {
-        this.maxSize = maxSize;
-        population = new ArrayList<>();
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation) {
+        this(rng, maxSize);
         initialize(evaluation);
     }
 
-    public Population(int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree) {
-        this.maxSize = maxSize;
-        population = new ArrayList<Individual>();
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree) {
+        this(rng, maxSize);
         initialize(evaluation);
         this.stagnancyThreshold = stagnancyThreshold;
         this.epurationDegree = epurationDegree;
     }
 
-    public Population(int maxSize, ContestEvaluation evaluation, int genomeSize) {
-        if(genomeSize>BASE_GENOME_SIZE)
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int genomeSize) {
+        this(rng, maxSize);
+        if (genomeSize > BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
 
-        this.maxSize = maxSize;
-        population = new ArrayList<>();
         initialize(evaluation);
     }
 
-    public Population(ArrayList<Individual> population) {
+    public Population(Random rng, ArrayList<Individual> population) {
+        this.rng = rng;
         this.maxSize = population.size();
         this.population = population;
+    }
+
+    public Population(Random rng, ArrayList<Individual> population, int genomeSize) {
+        this.rng = rng;
+        if (genomeSize > BASE_GENOME_SIZE)
+            FULL_GENOME_SIZE = genomeSize;
+
+        this.maxSize = population.size();
+        this.population = population;
+    }
+
+    public static void printPopulation(ArrayList<Individual> population) {
+        for (Individual i : population) {
+            System.out.println(i);
+        }
     }
 
     public void renewPopulation(ArrayList<Individual> newPopulation) {
         population = newPopulation;
     }
 
-    public Population(ArrayList<Individual> population, int genomeSize) {
-        if(genomeSize>BASE_GENOME_SIZE)
-            FULL_GENOME_SIZE = genomeSize;
-
-        this.maxSize = population.size();
-        this.population = population;
-    }
+    //endregion
 
     protected void initialize(ContestEvaluation evaluation) {
-        for(int i=0; i<maxSize; i++) {
-            population.add(new Individual(evaluation));
+        for (int i = 0; i < maxSize; i++) {
+            population.add(new Individual(rng, evaluation));
         }
     }
-
-    //endregion
 
     public void updateStatistics() {
         meanFitness = 0;
         bestFitness = Double.MIN_VALUE;
         worstFitness = Double.MAX_VALUE;
 
-        for (Individual individual: population) {
+        for (Individual individual : population) {
             double fitness = individual.getFitness();
             meanFitness += fitness;
 
-            if(fitness>bestFitness) {
+            if (fitness > bestFitness) {
                 bestFitness = fitness;
             }
 
-            if(fitness<worstFitness) {
+            if (fitness < worstFitness) {
                 worstFitness = fitness;
             }
         }
@@ -104,12 +113,6 @@ public class Population {
     public String getStatistics() {
         return meanFitness + ", " + bestFitness + ", " + worstFitness;
 //        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
-    }
-
-    public static void printPopulation(ArrayList<Individual> population) {
-        for(Individual i: population) {
-            System.out.println(i);
-        }
     }
 
     public int getMaxSize() {
@@ -129,7 +132,7 @@ public class Population {
     }
 
     public void evaluateFitness(ContestEvaluation evaluation) {
-        for(Individual i:population) {
+        for (Individual i : population) {
             i.evaluate(evaluation);
         }
 
@@ -146,9 +149,9 @@ public class Population {
         return new ArrayList<>(population.subList(0, elitism));
     }
 
-    public void epuration(double epurationDegree){
+    public void epuration(double epurationDegree) {
         sortIndividuals();
-        population = new ArrayList<>(population.subList(0, maxSize - (int)(maxSize * epurationDegree)));
+        population = new ArrayList<>(population.subList(0, maxSize - (int) (maxSize * epurationDegree)));
 //        System.out.println("Epuration enacted, purged individuals: " + (int)(maxSize * epurationDegree));
     }
 
@@ -163,7 +166,7 @@ public class Population {
             epuration(epurationDegree);
             stagnancyLevel = 0;
             while (population.size() < maxSize) {
-                population.add(new Individual(evaluation));
+                population.add(new Individual(rng, evaluation));
             }
         }
     }

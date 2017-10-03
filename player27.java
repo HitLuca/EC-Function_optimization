@@ -1,5 +1,6 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
+import src.genetics.CMAEvolutionaryStrategy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.crossover.CrossoverAverageWeighted;
 import src.genetics.components.ga.AGA;
@@ -12,6 +13,9 @@ import src.genetics.components.selection.SelectionLinearRanking;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
 import java.util.Properties;
 import java.util.Random;
 
@@ -37,7 +41,8 @@ public class player27 implements ContestSubmission {
     private ASelection selection;
     private ASurvival survival;
 
-    private AGA ga;
+	private AGA ga;
+	private CMAEvolutionaryStrategy es;
 
     public player27() {
         rng = new Random();
@@ -106,6 +111,7 @@ public class player27 implements ContestSubmission {
     private void loadProperties() {
 //		algorithmType = "Generational";
         algorithmType = "SteadyState";
+//      algorithmType = "CMA-ES";
 
         populationSize = 500;
         stagnancyThreshold = 50;
@@ -154,6 +160,10 @@ public class player27 implements ContestSubmission {
                         evaluation_,
                         epochs,
                         replacementNumber);
+                break;
+            }
+            case "CMA-ES": {
+                es = new CMAEvolutionaryStrategy(1, 10);
                 break;
             }
             default: {

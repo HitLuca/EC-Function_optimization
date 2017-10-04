@@ -1,6 +1,7 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.CMAEvolutionaryStrategy;
+import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.crossover.CrossoverAverageWeighted;
 import src.genetics.components.ga.AGA;
@@ -28,6 +29,7 @@ public class player27 implements ContestSubmission {
 
     private int populationSize;
     private int stagnancyThreshold;
+    private int wipeoutThreshold;
     private double epurationDegree;
     private int epochs;
     private int elitism;
@@ -40,9 +42,16 @@ public class player27 implements ContestSubmission {
     private double selectionPressure;
     private ASelection selection;
     private ASurvival survival;
+    private Stagnancy stagnancy;
 
 	private AGA ga;
 	private CMAEvolutionaryStrategy es;
+
+    private boolean isMultimodal;
+    private boolean hasStructure;
+    private boolean isSeparable;
+
+    private int function;
 
     public player27() {
         rng = new Random();
@@ -68,31 +77,35 @@ public class player27 implements ContestSubmission {
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
         // Property keys depend on specific evaluation
         // E.g. double param = Double.parseDouble(props.getProperty("property_name"));
-        boolean isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
-        boolean hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
-        boolean isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
+        isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
+        hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
+        isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
 
-        // Do sth with property values, e.g. specify relevant settings of your algorithm
-        if (isMultimodal) {
-            // Do sth
-        } else {
-            // Do sth else
-        }
+        setFunction();
     }
 
+    private void setFunction() {
+        if(!isMultimodal) {
+            function = 0;
+        } else if (hasStructure) {
+            function = 1;
+        } else {
+            function = 2;
+        }
+    }
     public void run() {
         printProperties(evaluation_);
 
-        // Run your algorithm here
         rng.setSeed(System.currentTimeMillis());
 //		rng.setSeed(Long.MAX_VALUE);
+
         loadProperties();
         printAlgorithmProperties();
 
         try {
             ga.run();
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             // TODO: fix NullPointerException
         }
     }
@@ -113,32 +126,77 @@ public class player27 implements ContestSubmission {
         algorithmType = "SteadyState";
 //      algorithmType = "CMA-ES";
 
-        populationSize = 500;
-        stagnancyThreshold = 50;
-        epurationDegree = 0.7;
+        switch(function) {
+            case 0: {
+                populationSize = 250;
 
-        epochs = -1;
-        elitism = 3;
-        replacementNumber = 10;
+                stagnancyThreshold = 100;
+                wipeoutThreshold = 250;
+                epurationDegree = 0.7;
 
+                epochs = -1;
+                elitism = 3;
+                replacementNumber = 50;
+
+
+                mutationSigma = 0.1;
+                mutationProbability = 0.9;
+
+                parentsNumber = 2;
+                selectionPressure = 1.75;
+                break;
+            }
+            case 1: {
+                populationSize = 1000;
+
+                stagnancyThreshold = 100;
+                wipeoutThreshold = 250;
+                epurationDegree = 0.7;
+
+                epochs = -1;
+                elitism = 3;
+                replacementNumber = 100;
+
+
+                mutationSigma = 0.1;
+                mutationProbability = 0.9;
+
+                parentsNumber = 2;
+                selectionPressure = 1.75;
+                break;
+            }
+            case 2: {
+                populationSize = 2500;
+
+                stagnancyThreshold = 100;
+                wipeoutThreshold = 250;
+                epurationDegree = 0.7;
+
+                epochs = -1;
+                elitism = 3;
+                replacementNumber = 150;
+
+
+                mutationSigma = 0.01;
+                mutationProbability = 0.9;
+
+                parentsNumber = 2;
+                selectionPressure = 1.75;
+                break;
+            }
+        }
+
+        stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
         crossover = new CrossoverAverageWeighted(rng);
-
-        mutationSigma = 0.1;
-        mutationProbability = 0.9;
         mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
-
-        parentsNumber = 2;
-        selectionPressure = 1.5;
         selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
-
         survival = new SurvivalBestFitness(rng);
 
         switch (algorithmType) {
             case "Generational": {
                 ga = new GenerationalGA(rng,
                         populationSize,
-                        stagnancyThreshold,
-                        epurationDegree,
+                        stagnancy,
                         selection,
                         crossover,
                         mutation,
@@ -151,8 +209,7 @@ public class player27 implements ContestSubmission {
             case "SteadyState": {
                 ga = new SteadyStateGA(rng,
                         populationSize,
-                        stagnancyThreshold,
-                        epurationDegree,
+                        stagnancy,
                         selection,
                         crossover,
                         mutation,

@@ -3,6 +3,7 @@ package src.genetics.components.ga;
 import org.vu.contest.ContestEvaluation;
 import src.genetics.Individual;
 import src.genetics.Population;
+import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.mutation.AMutation;
 import src.genetics.components.selection.ASelection;
@@ -15,10 +16,12 @@ import java.util.Random;
 public class GenerationalGA extends AGA {
 
     private int elitism;
+    private Stagnancy stagnancy;
 
-    public GenerationalGA(Random rng, int populationSize, int stagnancyThreshold, double epurationDegree, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
-        super(rng, populationSize, stagnancyThreshold, epurationDegree, selection, crossover, mutation, survival, evaluation, epochs);
+    public GenerationalGA(Random rng, int populationSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
+        super(rng, populationSize, stagnancy, selection, crossover, mutation, survival, evaluation, epochs);
         this.elitism = elitism;
+        this.stagnancy = stagnancy;
     }
 
     public void run() throws IOException {
@@ -27,7 +30,7 @@ public class GenerationalGA extends AGA {
 //        System.out.println("epoch, mean fitness, best fitness, worst fitness");
 
         for (epoch = 0; epoch < epochs; epoch++) {
-            Population newPopulation = new Population(rng, population.getMaxSize());
+            Population newPopulation = new Population(rng, population.getMaxSize(), stagnancy);
             population.sortIndividuals();
             newPopulation.addIndividuals(population.getElites(elitism));
             while (newPopulation.getCurrentSize() < population.getMaxSize()) {

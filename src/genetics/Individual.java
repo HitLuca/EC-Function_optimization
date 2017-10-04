@@ -64,6 +64,11 @@ public class Individual {
         return fitness;
     }
 
+    public void setFitness(double fitness) {
+        assert isEvaluated;
+        this.fitness = fitness;
+    }
+
     public int getId() {
         return id;
     }

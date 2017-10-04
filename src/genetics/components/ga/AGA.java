@@ -2,6 +2,7 @@ package src.genetics.components.ga;
 
 import org.vu.contest.ContestEvaluation;
 import src.genetics.Population;
+import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.mutation.AMutation;
 import src.genetics.components.selection.ASelection;
@@ -21,9 +22,9 @@ public abstract class AGA {
     protected int epochs;
     protected Random rng;
 
-    public AGA(Random rng, int populationSize, int stagnancyThreshold, double epurationDegree, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
+    public AGA(Random rng, int populationSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
         this.rng = rng;
-        this.population = new Population(rng, populationSize, evaluation, stagnancyThreshold, epurationDegree);
+        this.population = new Population(rng, populationSize, evaluation, stagnancy);
         this.survival = survival;
         this.crossover = crossover;
         this.selection = selection;

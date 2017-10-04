@@ -1,7 +1,11 @@
 package src.genetics;
 
 import org.vu.contest.ContestEvaluation;
+import src.genetics.components.FitnessSharing;
+import src.genetics.components.Stagnancy;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -23,15 +27,18 @@ public class Population {
 
     private Random rng;
 
+    private Stagnancy stagnancy;
+
     //region Constructors
-    public Population(Random rng, int maxSize) {
+    public Population(Random rng, int maxSize, Stagnancy stagnancy) {
         this.rng = rng;
         this.maxSize = maxSize;
+        this.stagnancy = stagnancy;
         population = new ArrayList<>();
     }
 
-    public Population(Random rng, int maxSize, int genomeSize) {
-        this(rng, maxSize);
+    public Population(Random rng, int maxSize, int genomeSize, Stagnancy stagnancy) {
+        this(rng, maxSize, stagnancy);
 
         if (genomeSize > BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
@@ -39,20 +46,20 @@ public class Population {
             FULL_GENOME_SIZE = genomeSize;
     }
 
-    public Population(Random rng, int maxSize, ContestEvaluation evaluation) {
-        this(rng, maxSize);
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation, Stagnancy stagnancy) {
+        this(rng, maxSize, stagnancy);
         initialize(evaluation);
     }
 
-    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree) {
-        this(rng, maxSize);
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree, Stagnancy stagnancy) {
+        this(rng, maxSize, stagnancy);
         initialize(evaluation);
         this.stagnancyThreshold = stagnancyThreshold;
         this.epurationDegree = epurationDegree;
     }
 
-    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int genomeSize) {
-        this(rng, maxSize);
+    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int genomeSize, Stagnancy stagnancy) {
+        this(rng, maxSize, stagnancy);
         if (genomeSize > BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
         else
@@ -99,6 +106,7 @@ public class Population {
         bestFitness = Double.MIN_VALUE;
         worstFitness = Double.MAX_VALUE;
 
+        variance = 0;
         for (Individual individual : population) {
             double fitness = individual.getFitness();
             meanFitness += fitness;
@@ -112,11 +120,18 @@ public class Population {
             }
         }
         meanFitness /= population.size();
+
+        for (Individual individual : population) {
+            variance += Math.pow(individual.getFitness() - meanFitness, 2);
+        }
+        variance /= (population.size()-1);
     }
 
     public String getStatistics() {
-        return meanFitness + ", " + bestFitness + ", " + worstFitness;
-//        return "Mean Fitness: " + meanFitness + " Best Fitness: " + bestFitness + " Worst Fitness: " + worstFitness;
+        return meanFitness
+                + ", " + bestFitness
+                + ", " + worstFitness
+                + ", " + variance;
     }
 
     public int getMaxSize() {
@@ -141,8 +156,7 @@ public class Population {
         }
 
         double old_best = bestFitness;
-        updateStatistics();
-        checkStagnancy(old_best, bestFitness, evaluation);
+        population = stagnancy.checkStagnancy(old_best, bestFitness, evaluation, population);
     }
 
     public void sortIndividuals() {
@@ -153,26 +167,11 @@ public class Population {
         return new ArrayList<>(population.subList(0, elitism));
     }
 
-    public void epuration(double epurationDegree) {
-        sortIndividuals();
-        population = new ArrayList<>(population.subList(0, maxSize - (int) (maxSize * epurationDegree)));
-//        System.out.println("Epuration enacted, purged individuals: " + (int)(maxSize * epurationDegree));
-    }
-
-    public void checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation) {
-
-        if (stagnancyThreshold == 0) return;
-
-        if (newBest > oldBest) stagnancyLevel = 0;
-        else stagnancyLevel++;
-
-        if (stagnancyLevel > stagnancyThreshold) {
-            epuration(epurationDegree);
-            stagnancyLevel = 0;
-            while (population.size() < maxSize) {
-                population.add(new Individual(rng, evaluation));
-            }
+    public void calculateSharedFitness() {
+        for(Individual ind: population) {
+            ind.setFitness(FitnessSharing.calculateSharedFitness(ind, population));
         }
+        updateStatistics();
     }
 
     public double getMeanFitness() {

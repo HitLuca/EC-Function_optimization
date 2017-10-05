@@ -22,8 +22,10 @@ public class Individual {
         id = objectCount;
 
         genome = new double[FULL_GENOME_SIZE];
-        for (int i = 0; i < FULL_GENOME_SIZE; i++)
+        for (int i = 0; i < BASE_GENOME_SIZE; i++)
             genome[i] = rng.nextDouble() * (max - min) + min;
+        for (int i = BASE_GENOME_SIZE; i < FULL_GENOME_SIZE; i++)
+            genome[i] = Math.pow(rng.nextGaussian(), 2);
 
         evaluate(evaluation, genome);
     }

@@ -24,6 +24,12 @@ public class GenerationalGA extends AGA {
         this.stagnancy = stagnancy;
     }
 
+    public GenerationalGA(Random rng, int populationSize, int fullGenomeSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
+        super(rng, populationSize, fullGenomeSize, stagnancy, selection, crossover, mutation, survival, evaluation, epochs);
+        this.elitism = elitism;
+        this.stagnancy = stagnancy;
+    }
+
     public void run() throws IOException {
         int epoch;
         System.out.println("Scores:");

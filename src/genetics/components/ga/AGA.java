@@ -22,9 +22,29 @@ public abstract class AGA {
     protected int epochs;
     protected Random rng;
 
+
     public AGA(Random rng, int populationSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
         this.rng = rng;
         this.population = new Population(rng, populationSize, evaluation, stagnancy);
+        this.survival = survival;
+        this.crossover = crossover;
+        this.selection = selection;
+        this.mutation = mutation;
+        this.evaluation = evaluation;
+
+        Properties props = evaluation.getProperties();
+        int evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
+
+        if (epochs == -1) {
+            this.epochs = Integer.MAX_VALUE;
+        } else {
+            this.epochs = epochs; //Math.min(epochs, (evaluations_limit_-population.getMaxSize())/(int) Math.ceil(selection.getSize()/pairSize));
+        }
+    }
+
+    public AGA(Random rng, int populationSize, int fullGenomeSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs) {
+        this.rng = rng;
+        this.population = new Population(rng, populationSize, evaluation, fullGenomeSize, stagnancy);
         this.survival = survival;
         this.crossover = crossover;
         this.selection = selection;

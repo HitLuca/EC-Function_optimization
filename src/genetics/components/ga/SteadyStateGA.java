@@ -20,6 +20,11 @@ public class SteadyStateGA extends AGA {
         this.replacementNumber = replacementNumber;
     }
 
+    public SteadyStateGA(Random rng, int populationSize, int fullGenomeSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int replacementNumber) {
+        super(rng, populationSize, fullGenomeSize, stagnancy, selection, crossover, mutation, survival, evaluation, epochs);
+        this.replacementNumber = replacementNumber;
+    }
+
     public void run() throws IOException {
         System.out.println("Scores:");
         try {

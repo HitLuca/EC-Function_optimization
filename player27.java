@@ -28,6 +28,7 @@ public class player27 implements ContestSubmission {
     private String algorithmType;
 
     private int populationSize;
+    private int fullGenomeSize;
     private int stagnancyThreshold;
     private int wipeoutThreshold;
     private double epurationDegree;
@@ -126,6 +127,7 @@ public class player27 implements ContestSubmission {
         algorithmType = "SteadyState";
 //      algorithmType = "CMA-ES";
 
+        fullGenomeSize = 20;
         switch(function) {
             case 0: {
                 populationSize = 250;
@@ -167,6 +169,7 @@ public class player27 implements ContestSubmission {
             }
             case 2: {
                 populationSize = 2500;
+                fullGenomeSize = 0;
 
                 stagnancyThreshold = 100;
                 wipeoutThreshold = 250;
@@ -196,6 +199,7 @@ public class player27 implements ContestSubmission {
             case "Generational": {
                 ga = new GenerationalGA(rng,
                         populationSize,
+                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,
@@ -209,6 +213,7 @@ public class player27 implements ContestSubmission {
             case "SteadyState": {
                 ga = new SteadyStateGA(rng,
                         populationSize,
+                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,

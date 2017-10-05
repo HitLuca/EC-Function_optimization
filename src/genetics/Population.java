@@ -42,8 +42,6 @@ public class Population {
 
         if (genomeSize > BASE_GENOME_SIZE)
             FULL_GENOME_SIZE = genomeSize;
-        else
-            FULL_GENOME_SIZE = genomeSize;
     }
 
     public Population(Random rng, int maxSize, ContestEvaluation evaluation, Stagnancy stagnancy) {
@@ -61,8 +59,6 @@ public class Population {
     public Population(Random rng, int maxSize, ContestEvaluation evaluation, int genomeSize, Stagnancy stagnancy) {
         this(rng, maxSize, stagnancy);
         if (genomeSize > BASE_GENOME_SIZE)
-            FULL_GENOME_SIZE = genomeSize;
-        else
             FULL_GENOME_SIZE = genomeSize;
 
         initialize(evaluation);

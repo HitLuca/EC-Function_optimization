@@ -49,9 +49,6 @@ public class CrossoverNPoints extends ACrossover {
             }
         }
 
-        child1Genome = averageExtraGenome(child1Genome, parents);
-        child2Genome = averageExtraGenome(child2Genome, parents);
-
         children.add(new Individual(child1Genome));
         children.add(new Individual(child2Genome));
 

@@ -11,9 +11,9 @@ public class ProjectLogger {
     public static void main(String args[]) throws IOException, InterruptedException {
         Runtime run = Runtime.getRuntime();
 
-        String function = "BentCigarFunction";
+//        String function = "BentCigarFunction";
 //        String function = "SchaffersEvaluation";
-//        String function = "KatsuuraEvaluation";
+        String function = "KatsuuraEvaluation";
 
         int runsNumber = 1;
 

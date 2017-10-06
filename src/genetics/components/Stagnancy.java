@@ -43,20 +43,26 @@ public class Stagnancy {
             wipeoutLevel++;
         }
 
-        if (wipeoutLevel > wipeoutThreshold) {
-            population = epuration(0.99, population);
-            wipeoutLevel = 0;
-            stagnancyLevel = 0;
-            while (population.size() < populationMaxSize) {
-                population.add(new Individual(rng, evaluation));
-            }
-        } else if (stagnancyLevel > stagnancyThreshold) {
-            population = epuration(epurationDegree, population);
-            stagnancyLevel = 0;
-            while (population.size() < populationMaxSize) {
-                population.add(new Individual(rng, evaluation));
+        if(stagnancyThreshold > 0) {
+            if (wipeoutLevel > wipeoutThreshold) {
+                population = epuration(0.99, population);
+                wipeoutLevel = 0;
+                stagnancyLevel = 0;
+                while (population.size() < populationMaxSize) {
+                    population.add(new Individual(rng, evaluation));
+                }
+            } else if (stagnancyLevel > stagnancyThreshold) {
+                population = epuration(epurationDegree, population);
+                stagnancyLevel = 0;
+                while (population.size() < populationMaxSize) {
+                    population.add(new Individual(rng, evaluation));
+                }
             }
         }
         return population;
+    }
+
+    public boolean gotFitnessImprovement() {
+        return stagnancyLevel < 10;
     }
 }

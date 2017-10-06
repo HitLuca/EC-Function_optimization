@@ -24,31 +24,45 @@ public class GenerationalGA extends AGA {
         this.stagnancy = stagnancy;
     }
 
-    public GenerationalGA(Random rng, int populationSize, int fullGenomeSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
-        super(rng, populationSize, fullGenomeSize, stagnancy, selection, crossover, mutation, survival, evaluation, epochs);
-        this.elitism = elitism;
-        this.stagnancy = stagnancy;
-    }
-
     public void run() throws IOException {
         int epoch;
-        System.out.println("Scores:");
-//        System.out.println("epoch, mean fitness, best fitness, worst fitness");
-
-        for (epoch = 0; epoch < epochs; epoch++) {
-            Population newPopulation = new Population(rng, population.getMaxSize(), stagnancy);
-            population.sortIndividuals();
-            newPopulation.addIndividuals(population.getElites(elitism));
-            while (newPopulation.getCurrentSize() < population.getMaxSize()) {
-                ArrayList<Individual> parents = selection.select(population.getIndividuals());
-                ArrayList<Individual> children = crossover.crossover(parents);
-                mutation.mutate(children);
-                newPopulation.addIndividuals(children);
-            }
-            population.renewPopulation(newPopulation.getIndividuals());
-            population.evaluateFitness(evaluation);
-            System.out.println(epoch + ", " + population.getStatistics());
+        if (printing) {
+            System.out.println("Scores:");
         }
-        System.out.println("EndScores\n");
+
+        try {
+            for (epoch = 0; epoch < epochs; epoch++) {
+                Population newPopulation = new Population(rng, population.getMaxSize(), stagnancy);
+                population.sortIndividuals();
+                newPopulation.addIndividuals(population.getElites(elitism));
+                while (newPopulation.getCurrentSize() < population.getMaxSize()) {
+                    ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                    ArrayList<Individual> children = crossover.crossover(parents);
+                    mutation.mutate(children);
+                    newPopulation.addIndividuals(children);
+                }
+                population.renewPopulation(newPopulation.getIndividuals());
+                population.evaluateFitness(evaluation);
+                population.updateStatistics();
+
+                if (printing) {
+                    System.out.println(epoch + ", " + population.getStatistics());
+                }
+
+                if(population.gotFitnessImprovement()) {
+                    mutation.increaseMutation();
+                } else {
+                    mutation.decreaseMutation();
+                }
+            }
+        } catch (Exception e) {
+            if (printing) {
+                System.out.println("EndScores\n");
+            }
+            throw e;
+        }
+        if (printing) {
+            System.out.println("EndScores\n");
+        }
     }
 }

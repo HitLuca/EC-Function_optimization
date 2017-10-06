@@ -28,7 +28,6 @@ public class player27 implements ContestSubmission {
     private String algorithmType;
 
     private int populationSize;
-    private int fullGenomeSize;
     private int stagnancyThreshold;
     private int wipeoutThreshold;
     private double epurationDegree;
@@ -48,11 +47,11 @@ public class player27 implements ContestSubmission {
 	private AGA ga;
 	private CMAEvolutionaryStrategy es;
 
+	private boolean printOutput;
+
     private boolean isMultimodal;
     private boolean hasStructure;
     private boolean isSeparable;
-
-    private int function;
 
     public player27() {
         rng = new Random();
@@ -81,27 +80,19 @@ public class player27 implements ContestSubmission {
         isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
         hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
-
-        setFunction();
     }
 
-    private void setFunction() {
-        if(!isMultimodal) {
-            function = 0;
-        } else if (hasStructure) {
-            function = 1;
-        } else {
-            function = 2;
-        }
-    }
     public void run() {
-        printProperties(evaluation_);
 
         rng.setSeed(System.currentTimeMillis());
 //		rng.setSeed(Long.MAX_VALUE);
 
         loadProperties();
-        printAlgorithmProperties();
+
+        if (printOutput) {
+            printProperties(evaluation_);
+            printAlgorithmProperties();
+        }
 
         try {
             ga.run();
@@ -123,71 +114,42 @@ public class player27 implements ContestSubmission {
     }
 
     private void loadProperties() {
-//		algorithmType = "Generational";
-        algorithmType = "SteadyState";
-//      algorithmType = "CMA-ES";
+        printOutput = true;
+        epochs = -1;
 
-        fullGenomeSize = 20;
-        switch(function) {
-            case 0: {
-                populationSize = 250;
+        if (isMultimodal) {
+            algorithmType = "SteadyState";
 
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
-
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 50;
-
-
-                mutationSigma = 0.1;
-                mutationProbability = 0.9;
-
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
+            if (evaluations_limit_ <= 100000) {
+                populationSize = evaluations_limit_ / 100;
+            } else {
+                populationSize = evaluations_limit_ / 1000;
             }
-            case 1: {
-                populationSize = 1000;
 
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
+            replacementNumber = (int) (populationSize * 0.1);
 
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 100;
+            mutationSigma = 0.1;
+            mutationProbability = 1;
 
+            parentsNumber = 2;
+            selectionPressure = 1.75;
+        } else {
+            algorithmType = "Generational";
 
-                mutationSigma = 0.1;
-                mutationProbability = 0.9;
+            populationSize = evaluations_limit_ / 1000;
 
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
-            }
-            case 2: {
-                populationSize = 2500;
-                fullGenomeSize = 0;
+            elitism = 1;
 
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
+            mutationSigma = 0.01;
+            mutationProbability = 1;
 
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 150;
-
-
-                mutationSigma = 0.01;
-                mutationProbability = 0.9;
-
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
-            }
+            parentsNumber = 2;
+            selectionPressure = 2;
         }
+
+        stagnancyThreshold = evaluations_limit_ / 400;
+        wipeoutThreshold = evaluations_limit_ / 200;
+        epurationDegree = 0.7;
 
         stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
         crossover = new CrossoverAverageWeighted(rng);
@@ -199,7 +161,6 @@ public class player27 implements ContestSubmission {
             case "Generational": {
                 ga = new GenerationalGA(rng,
                         populationSize,
-                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,
@@ -213,7 +174,6 @@ public class player27 implements ContestSubmission {
             case "SteadyState": {
                 ga = new SteadyStateGA(rng,
                         populationSize,
-                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,
@@ -233,6 +193,8 @@ public class player27 implements ContestSubmission {
                 break;
             }
         }
+        ga.setPrinting(printOutput);
+
     }
 
     private void printAlgorithmProperties() {
@@ -240,6 +202,7 @@ public class player27 implements ContestSubmission {
         System.out.println("algorithmType=" + ga);
         System.out.println("populationSize=" + populationSize);
         System.out.println("stagnancyThreshold=" + stagnancyThreshold);
+        System.out.println("wipeoutThreshold=" + wipeoutThreshold);
         System.out.println("epurationDegree=" + epurationDegree);
         System.out.println("epochs=" + epochs);
         System.out.println("elitism=" + elitism);

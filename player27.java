@@ -10,7 +10,9 @@ import src.genetics.components.ga.SteadyStateGA;
 import src.genetics.components.mutation.AMutation;
 import src.genetics.components.mutation.MutationGaussian;
 import src.genetics.components.selection.ASelection;
+import src.genetics.components.selection.SelectionFitnessProportional;
 import src.genetics.components.selection.SelectionLinearRanking;
+import src.genetics.components.selection.SelectionTournament;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
@@ -116,6 +118,9 @@ public class player27 implements ContestSubmission {
     private void loadProperties() {
         printOutput = true;
         epochs = -1;
+        mutationSigma = 0.05;
+        mutationProbability = 1;
+        parentsNumber = 2;
 
         if (isMultimodal) {
             algorithmType = "SteadyState";
@@ -127,29 +132,19 @@ public class player27 implements ContestSubmission {
             }
 
             replacementNumber = (int) (populationSize * 0.1);
-
-            mutationSigma = 0.1;
-            mutationProbability = 1;
-
-            parentsNumber = 2;
             selectionPressure = 1.75;
+
+            stagnancyThreshold = evaluations_limit_ / 4000;
+            wipeoutThreshold = evaluations_limit_ / 2000;
+            epurationDegree = 0.7;
         } else {
             algorithmType = "Generational";
-
             populationSize = evaluations_limit_ / 1000;
-
             elitism = 1;
 
-            mutationSigma = 0.01;
-            mutationProbability = 1;
-
-            parentsNumber = 2;
             selectionPressure = 2;
+            stagnancyThreshold = 0;
         }
-
-        stagnancyThreshold = evaluations_limit_ / 400;
-        wipeoutThreshold = evaluations_limit_ / 200;
-        epurationDegree = 0.7;
 
         stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
         crossover = new CrossoverAverageWeighted(rng);

@@ -1,6 +1,7 @@
 package src.genetics.components.survival;
 
 import src.genetics.Individual;
+import src.genetics.Population;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,10 +13,10 @@ public class SurvivalBestFitness extends ASurvival {
     }
 
     @Override
-    public ArrayList<Individual> survival(ArrayList<Individual> population, int size) {
-        population.sort(new Individual.FitnessComparator().reversed());
+    public ArrayList<Individual> survival(Population population) {
+        population.sortIndividualsReversed();
 
-        return new ArrayList<>(population.subList(0, size));
+        return new ArrayList<>(population.getIndividuals().subList(0, population.getMaxSize()));
     }
 
 }

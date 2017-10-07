@@ -33,10 +33,10 @@ public class GenerationalGA extends AGA {
         try {
             for (epoch = 0; epoch < epochs; epoch++) {
                 Population newPopulation = new Population(rng, population.getMaxSize(), stagnancy);
-                population.sortIndividuals();
+                population.sortIndividualsReversed();
                 newPopulation.addIndividuals(population.getElites(elitism));
                 while (newPopulation.getCurrentSize() < population.getMaxSize()) {
-                    ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                    ArrayList<Individual> parents = selection.select(population);
                     ArrayList<Individual> children = crossover.crossover(parents);
                     mutation.mutate(children);
                     newPopulation.addIndividuals(children);
@@ -49,11 +49,11 @@ public class GenerationalGA extends AGA {
                     System.out.println(epoch + ", " + population.getStatistics());
                 }
 
-                if(population.gotFitnessImprovement()) {
-                    mutation.increaseMutation();
-                } else {
-                    mutation.decreaseMutation();
-                }
+//                if(population.gotFitnessImprovement()) {
+//                    mutation.increaseMutation();
+//                } else {
+//                    mutation.decreaseMutation();
+//                }
             }
         } catch (Exception e) {
             if (printing) {

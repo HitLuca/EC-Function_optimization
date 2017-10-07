@@ -30,14 +30,14 @@ public class MutationGaussian extends AMutation {
 
     @Override
     public void increaseMutation() {
-        if(sigma < 0.5) {
+        if(sigma < 0.25) {
             sigma += sigma * 0.01;
         }
     }
 
     @Override
     public void decreaseMutation() {
-        if(sigma > 0.005) {
+        if(sigma > 0.0025) {
             sigma -= sigma * 0.01;
         }
     }

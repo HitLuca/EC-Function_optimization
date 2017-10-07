@@ -26,7 +26,6 @@ public class Population {
     private Stagnancy stagnancy;
 
     //region Constructors
-
     public Population(Random rng, int maxSize, Stagnancy stagnancy) {
         this.rng = rng;
         this.maxSize = maxSize;
@@ -44,10 +43,9 @@ public class Population {
         this.maxSize = population.size();
         this.population = population;
     }
-
     //endregion
 
-    public static void printPopulation(ArrayList<Individual> population) {
+    public void printPopulation() {
         for (Individual i : population) {
             System.out.println(i);
         }
@@ -57,7 +55,7 @@ public class Population {
         population = newPopulation;
     }
 
-    protected void initialize(ContestEvaluation evaluation) {
+    private void initialize(ContestEvaluation evaluation) {
         for (int i = 0; i < maxSize; i++) {
             population.add(new Individual(rng, evaluation));
         }
@@ -89,25 +87,6 @@ public class Population {
         variance /= (population.size()-1);
     }
 
-    public String getStatistics() {
-        return meanFitness
-                + ", " + bestFitness
-                + ", " + worstFitness
-                + ", " + variance;
-    }
-
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    public int getCurrentSize() {
-        return population.size();
-    }
-
-    public ArrayList<Individual> getIndividuals() {
-        return population;
-    }
-
     public void addIndividuals(ArrayList<Individual> individuals) {
         population.addAll(individuals);
     }
@@ -124,12 +103,13 @@ public class Population {
     public boolean gotFitnessImprovement() {
         return stagnancy.gotFitnessImprovement();
     }
+
     public void sortIndividuals() {
-        population.sort(new Individual.FitnessComparator().reversed());
+        population.sort(new Individual.FitnessComparator());
     }
 
-    public ArrayList<Individual> getElites(int elitism) {
-        return new ArrayList<>(population.subList(0, elitism));
+    public void sortIndividualsReversed() {
+        population.sort(new Individual.FitnessComparator().reversed());
     }
 
     public void calculateSharedFitness() {
@@ -137,6 +117,11 @@ public class Population {
             ind.setFitness(FitnessSharing.calculateSharedFitness(ind, population));
         }
         updateStatistics();
+    }
+
+    //region Getters
+    public ArrayList<Individual> getElites(int elitism) {
+        return new ArrayList<>(population.subList(0, elitism));
     }
 
     public double getMeanFitness() {
@@ -154,4 +139,27 @@ public class Population {
     public double getVariance() {
         return variance;
     }
+
+    public String getStatistics() {
+        return meanFitness
+                + ", " + bestFitness
+                + ", " + worstFitness
+                + ", " + variance;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public int getCurrentSize() {
+        return population.size();
+    }
+
+    public int hashCode() {
+        return population.hashCode();
+    }
+    public ArrayList<Individual> getIndividuals() {
+        return population;
+    }
+    //endregion
 }

@@ -22,20 +22,50 @@ public class SteadyStateGA extends AGA {
     }
 
     public void run() throws IOException {
+        double tselection = 0;
+        int nselection = 0;
+        double tcrossover = 0;
+        int ncrossover = 0;
+        double tmutation = 0;
+        int nmutation = 0;
+        double tsurvival = 0;
+        int nsurvival = 0;
+        double tevaluation = 0;
+        int nevaluation = 0;
+        double t;
         if (printing) {
             System.out.println("Scores:");
         }
+        double t1 = System.currentTimeMillis();
+
         try {
             for (int epoch = 0; epoch < epochs; epoch++) {
-                while (population.getCurrentSize() < population.getMaxSize() + replacementNumber) {
-                    ArrayList<Individual> parents = selection.select(population.getIndividuals());
+                ArrayList<Individual> newChildren = new ArrayList<>();
+                while (population.getCurrentSize() + newChildren.size() < population.getMaxSize() + replacementNumber) {
+                    t = System.currentTimeMillis();
+                    ArrayList<Individual> parents = selection.select(population);
+                    tselection += System.currentTimeMillis() - t;
+                    nselection ++;
+                    t = System.currentTimeMillis();
                     ArrayList<Individual> children = crossover.crossover(parents);
+                    tcrossover += System.currentTimeMillis() - t;
+                    ncrossover ++;
+                    t = System.currentTimeMillis();
                     mutation.mutate(children);
-                    population.addIndividuals(children);
+                    tmutation += System.currentTimeMillis() - t;
+                    nmutation ++;
+                    newChildren.addAll(children);
                 }
-                population.updateStatistics();
+                population.addIndividuals(newChildren);
+                t = System.currentTimeMillis();
                 population.evaluateFitness(evaluation);
-                population.renewPopulation(survival.survival(population.getIndividuals(), population.getMaxSize()));
+                tevaluation += System.currentTimeMillis() - t;
+                nevaluation ++;
+                t = System.currentTimeMillis();
+                ArrayList<Individual> survivors = survival.survival(population);
+                population.renewPopulation(survivors);
+                tsurvival += System.currentTimeMillis() - t;
+                nsurvival ++;
                 population.updateStatistics();
                 if (printing) {
                     System.out.println(epoch + ", " + population.getStatistics());
@@ -56,5 +86,13 @@ public class SteadyStateGA extends AGA {
         if (printing) {
             System.out.println("EndScores\n");
         }
+
+        System.out.println("Selection " + tselection + " " + nselection + " " + tselection / nselection);
+        System.out.println("Crossover " + tcrossover + " " + ncrossover + " " + tcrossover / ncrossover);
+        System.out.println("Mutation " + tmutation + " " + nmutation + " " + tmutation / nmutation);
+        System.out.println("Survival " + tsurvival + " " + nsurvival + " " + tsurvival / nsurvival);
+        System.out.println("Evaluation " + tevaluation + " " + nevaluation + " " + tevaluation / nevaluation);
+        System.out.println("Total chunks " + (tselection + tcrossover + tmutation + tsurvival + tevaluation));
+        System.out.println("Total " + (System.currentTimeMillis() - t1));
     }
 }

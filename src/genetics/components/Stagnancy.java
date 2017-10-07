@@ -31,19 +31,15 @@ public class Stagnancy {
     }
 
     public ArrayList<Individual> checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation, ArrayList<Individual> population) {
-//        if (stagnancyThreshold == 0) {
-//            return population;
-//        }
-
-        if (newBest > oldBest) {
-            stagnancyLevel = 0;
-            wipeoutLevel = 0;
-        } else {
-            stagnancyLevel++;
-            wipeoutLevel++;
-        }
-
         if(stagnancyThreshold > 0) {
+            if (newBest > oldBest) {
+                stagnancyLevel = 0;
+                wipeoutLevel = 0;
+            } else {
+                stagnancyLevel++;
+                wipeoutLevel++;
+            }
+
             if (wipeoutLevel > wipeoutThreshold) {
                 population = epuration(0.99, population);
                 wipeoutLevel = 0;

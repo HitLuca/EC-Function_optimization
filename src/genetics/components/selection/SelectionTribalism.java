@@ -30,8 +30,8 @@ public class SelectionTribalism extends ASelection {
     }
 
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> pop) {
-        ArrayList<Individual> population = new ArrayList<>(pop);
+    public ArrayList<Individual> select(Population pop) {
+        ArrayList<Individual> population = new ArrayList<>(pop.getIndividuals());
         double worstFitness = 0;
         double[] attraction = new double[population.size()];
 

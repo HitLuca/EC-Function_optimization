@@ -75,7 +75,6 @@ public class Individual {
     public String toString() {
         return "Individual{" +
                 "id=" + id +
-                ", genome=" + Arrays.toString(genome) +
                 ", fitness=" + fitness +
                 '}';
     }
@@ -90,5 +89,9 @@ public class Individual {
             else
                 return -1;
         }
+    }
+
+    public int hashCode() {
+        return Double.hashCode(fitness);
     }
 }

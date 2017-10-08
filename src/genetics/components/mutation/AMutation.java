@@ -33,7 +33,4 @@ public abstract class AMutation {
         }
         return genome;
     }
-
-    public abstract void increaseMutation();
-    public abstract void decreaseMutation();
 }

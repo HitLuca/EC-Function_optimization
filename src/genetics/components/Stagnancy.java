@@ -3,6 +3,7 @@ package src.genetics.components;
 import org.vu.contest.ContestEvaluation;
 import src.genetics.Individual;
 import src.genetics.Population;
+import src.genetics.components.mutation.MutationGaussian;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class Stagnancy {
                 while (population.size() < populationMaxSize) {
                     population.add(new Individual(rng, evaluation));
                 }
+                MutationGaussian.resetMutation();
             } else if (stagnancyLevel > stagnancyThreshold) {
                 population = epuration(epurationDegree, population);
                 stagnancyLevel = 0;
@@ -59,6 +61,6 @@ public class Stagnancy {
     }
 
     public boolean gotFitnessImprovement() {
-        return stagnancyLevel < 10;
+        return stagnancyLevel < 5;
     }
 }

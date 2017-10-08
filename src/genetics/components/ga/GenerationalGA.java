@@ -6,6 +6,7 @@ import src.genetics.Population;
 import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.mutation.AMutation;
+import src.genetics.components.mutation.MutationGaussian;
 import src.genetics.components.selection.ASelection;
 import src.genetics.components.survival.ASurvival;
 
@@ -49,11 +50,11 @@ public class GenerationalGA extends AGA {
                     System.out.println(epoch + ", " + population.getStatistics());
                 }
 
-//                if(population.gotFitnessImprovement()) {
-//                    mutation.increaseMutation();
-//                } else {
-//                    mutation.decreaseMutation();
-//                }
+                if(population.gotFitnessImprovement()) {
+                    ((MutationGaussian)mutation).increaseMutation();
+                } else {
+                    ((MutationGaussian)mutation).decreaseMutation();
+                }
             }
         } catch (Exception e) {
             if (printing) {

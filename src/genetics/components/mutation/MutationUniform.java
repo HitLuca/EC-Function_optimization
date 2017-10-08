@@ -26,12 +26,4 @@ public class MutationUniform extends AMutation {
             }
         }
     }
-
-    @Override
-    public void increaseMutation() {
-    }
-
-    @Override
-    public void decreaseMutation() {
-    }
 }

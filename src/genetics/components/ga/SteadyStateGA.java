@@ -72,9 +72,9 @@ public class SteadyStateGA extends AGA {
                 }
 
                 if(population.gotFitnessImprovement()) {
-                    mutation.increaseMutation();
+                    ((MutationGaussian)mutation).increaseMutation();
                 } else {
-                    mutation.decreaseMutation();
+                    ((MutationGaussian)mutation).decreaseMutation();
                 }
             }
         } catch (Exception e) {

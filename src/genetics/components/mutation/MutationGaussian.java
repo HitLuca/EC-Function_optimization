@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class MutationGaussian extends AMutation {
 
-    private double sigma;
+    private static double sigma;
 
     public MutationGaussian(Random rng, double sigma, double mutationProbability) {
         super(rng, mutationProbability);
@@ -28,20 +28,21 @@ public class MutationGaussian extends AMutation {
         }
     }
 
-    @Override
-    public void increaseMutation() {
-        if(sigma < 0.25) {
+    public static void increaseMutation() {
+        if(sigma < 0.1) {
             sigma += sigma * 0.01;
         }
     }
 
-    @Override
-    public void decreaseMutation() {
-        if(sigma > 0.0025) {
+    public static void decreaseMutation() {
+        if(sigma > 0.001) {
             sigma -= sigma * 0.01;
         }
     }
 
+    public static void resetMutation() {
+        sigma = 0.05;
+    }
     public double getSigma() {
         return sigma;
     }

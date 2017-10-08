@@ -139,7 +139,7 @@ public class player27 implements ContestSubmission {
             epurationDegree = 0.7;
         } else {
             algorithmType = "Generational";
-            populationSize = evaluations_limit_ / 1000;
+            populationSize = 4;
             elitism = 1;
 
             selectionPressure = 2;

@@ -2,8 +2,7 @@ import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.CMAEvolutionaryStrategy;
 import src.genetics.components.Stagnancy;
-import src.genetics.components.crossover.ACrossover;
-import src.genetics.components.crossover.CrossoverAverageWeighted;
+import src.genetics.components.crossover.*;
 import src.genetics.components.ga.AGA;
 import src.genetics.components.ga.GenerationalGA;
 import src.genetics.components.ga.SteadyStateGA;
@@ -131,7 +130,7 @@ public class player27 implements ContestSubmission {
                 populationSize = evaluations_limit_ / 1000;
             }
 
-            replacementNumber = (int) (populationSize * 0.1);
+            replacementNumber = populationSize / 10;
             selectionPressure = 1.75;
 
             stagnancyThreshold = evaluations_limit_ / 4000;

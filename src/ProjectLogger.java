@@ -12,10 +12,10 @@ public class ProjectLogger {
         Runtime run = Runtime.getRuntime();
 
 //        String function = "BentCigarFunction";
-//        String function = "SchaffersEvaluation";
-        String function = "KatsuuraEvaluation";
+        String function = "SchaffersEvaluation";
+//        String function = "KatsuuraEvaluation";
 
-        int runsNumber = 1;
+        int runsNumber = 3;
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
@@ -23,14 +23,12 @@ public class ProjectLogger {
         String outputPath = "logs/" + dateFormat.format(date) + "_" + function + "/";
         new File(outputPath).mkdir();
 
-        deleteLastRunFile();
+//        deleteLastRunFile();
+
+        FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
+        logger = new BufferedWriter(fileWriter);
 
         for (int i = 0; i < runsNumber; i++) {
-            String filename = i + ".log";
-
-            FileWriter fileWriter = new FileWriter(outputPath + filename);
-            logger = new BufferedWriter(fileWriter);
-
             Process pr = run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
             pr.waitFor();
 
@@ -44,14 +42,14 @@ public class ProjectLogger {
                 System.out.println(line);
                 logger.write(line + "\n");
             }
-            logger.close();
 
-            File source = new File(outputPath + filename);
-            File destination = new File("logs/" + "last_run.log");
-
-//            copyFile(source,destination);
-            appendFile(source, destination);
+//            File source = new File(outputPath + filename);
+//            File destination = new File("logs/" + "last_run.log");
+//
+////            copyFile(source,destination);
+//            appendFile(source, destination);
         }
+        logger.close();
 
 
     }

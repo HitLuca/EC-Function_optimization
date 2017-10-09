@@ -59,19 +59,19 @@ public class CMAEvolutionaryStrategy {
         double sumOfSq = weights_norm*weights_norm;
 
         //Initialize parameters with the recommended values
-        mu_w = 1/sumOfSq;
+        mu_w = 0.3*lambda;//1/sumOfSq;
         c_c = 4.0/ N;
         c_sigma = 4.0/ N; //3 / N ?
         c_1 = 2.0/(N * N);
         c_mu = mu_w/(N * N);
-        d_sigma = 1 + Math.sqrt(mu_w/ N);
+        d_sigma = 1 + Math.sqrt(mu_w/ (double)N);
 
         p_c = zerosVector(N);
         p_sigma = zerosVector(N);
 
         //Initial distribution params!
         m = zerosVector(N);
-        sigma = 1;
+        sigma = 0.3;
     }
 
     public void run(ContestEvaluation evaluation, int epochs)
@@ -145,18 +145,19 @@ public class CMAEvolutionaryStrategy {
             ///UPDATE SIGMA
 
             double expectation = Math.sqrt(2) * Gamma.gamma((N + 1) / 2.0) / Gamma.gamma(N / 2.0);
-            sigma = sigma * Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
+//            sigma = sigma * Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
 
 //            System.out.println(Arrays.toString(m.toArray()));
 
-            System.out.println("Epoch: " + ep + " Fitness: " + (double) evaluation.evaluate(m.toArray()));
+            System.out.println("Epoch: " + ep + " Fitness: " + (double) evaluation.evaluate(m.toArray())
+            + " sigma: " + sigma);
         }
     }
 
     public ArrayList<Individual> sample(ContestEvaluation evaluation)
     {
         ArrayList<Individual> sampled = new ArrayList<>();
-        MultivariateNormalDistribution mnd = new MultivariateNormalDistribution(m.toArray(), C.getData());
+        MultivariateNormalDistribution mnd = new MultivariateNormalDistribution(zerosVector(N).toArray(), C.getData());
 
         for(int i=0; i<lambda;i++) {
             RealVector vector = new ArrayRealVector(mnd.sample());

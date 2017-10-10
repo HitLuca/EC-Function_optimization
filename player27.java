@@ -1,6 +1,7 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.CMAEvolutionaryStrategy;
+import src.genetics.PSO;
 import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
 import src.genetics.components.crossover.CrossoverAverageWeighted;
@@ -14,11 +15,8 @@ import src.genetics.components.selection.SelectionLinearRanking;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 import java.util.Properties;
-import java.util.Random;
 
 public class player27 implements ContestSubmission {
     public Random rng;
@@ -35,6 +33,9 @@ public class player27 implements ContestSubmission {
     private int epochs;
     private int elitism;
     private int replacementNumber;
+    private double w;
+    private double phi1;
+    private double phi2;
     private ACrossover crossover;
     private double mutationSigma;
     private double mutationProbability;
@@ -47,6 +48,7 @@ public class player27 implements ContestSubmission {
 
 	private AGA ga;
 	private CMAEvolutionaryStrategy es;
+	private PSO pso;
 
     private boolean isMultimodal;
     private boolean hasStructure;
@@ -104,6 +106,11 @@ public class player27 implements ContestSubmission {
         printAlgorithmProperties();
 
         try {
+            switch (algorithmType){
+                case "CMA-ES": {es.run(evaluation_, epochs);}
+                case "src.genetics.PSO": {pso.run(evaluation_);}
+                default: {ga.run();}
+            }
             ga.run();
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,8 +131,9 @@ public class player27 implements ContestSubmission {
 
     private void loadProperties() {
 //		algorithmType = "Generational";
-        algorithmType = "SteadyState";
+//        algorithmType = "SteadyState";
 //      algorithmType = "CMA-ES";
+        algorithmType = "src.genetics.PSO";
 
         fullGenomeSize = 20;
         switch(function) {
@@ -146,6 +154,11 @@ public class player27 implements ContestSubmission {
 
                 parentsNumber = 2;
                 selectionPressure = 1.75;
+
+                w = 0.86;
+                phi1 = 0.07;
+                phi2 = 0.07;
+
                 break;
             }
             case 1: {
@@ -226,6 +239,14 @@ public class player27 implements ContestSubmission {
             }
             case "CMA-ES": {
                 es = new CMAEvolutionaryStrategy(1, 10);
+                break;
+            }
+            case "src.genetics.PSO": {
+                populationSize = 80;
+                w = 0.8;
+                phi1 = 0.2;
+                phi2 = 0.8;
+                pso = new PSO(populationSize, epochs, w, phi1, phi2, rng);
                 break;
             }
             default: {

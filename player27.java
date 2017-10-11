@@ -1,6 +1,7 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.CMAEvolutionaryStrategy;
+import src.genetics.DifferentialEvolution;
 import src.genetics.PSO;
 import src.genetics.components.Stagnancy;
 import src.genetics.components.crossover.ACrossover;
@@ -33,10 +34,18 @@ public class player27 implements ContestSubmission {
     private int epochs;
     private int elitism;
     private int replacementNumber;
+    //PSO
     private int swarmSize;
     private double w;
     private double phi1;
     private double phi2;
+    //Differential
+    private int difPopulationSize;
+    private double f;
+    private double cr;
+    private char base;
+    private int diffN;
+
     private ACrossover crossover;
     private double mutationSigma;
     private double mutationProbability;
@@ -50,6 +59,7 @@ public class player27 implements ContestSubmission {
 	private AGA ga;
 	private CMAEvolutionaryStrategy es;
 	private PSO pso;
+	private DifferentialEvolution de;
 
     private boolean isMultimodal;
     private boolean hasStructure;
@@ -108,11 +118,23 @@ public class player27 implements ContestSubmission {
 
         try {
             switch (algorithmType){
-                case "CMA-ES": {es.run(evaluation_, epochs);}
-                case "src.genetics.PSO": {pso.run(evaluation_);}
-                default: {ga.run();}
+                case "CMA-ES": {
+                    es.run(evaluation_, epochs);
+                    break;
+                }
+                case "PSO": {
+                    pso.run(evaluation_);
+                    break;
+                }
+                case "DE": {
+                    de.run(evaluation_);
+                    break;
+                }
+                default: {
+                    ga.run();
+                    break;
+                }
             }
-            ga.run();
         } catch (Exception e) {
             e.printStackTrace();
             // TODO: fix NullPointerException
@@ -134,9 +156,10 @@ public class player27 implements ContestSubmission {
 //		algorithmType = "Generational";
 //        algorithmType = "SteadyState";
 //      algorithmType = "CMA-ES";
-        algorithmType = "src.genetics.PSO";
+//        algorithmType = "PSO";
+        algorithmType = "DE";
 
-        fullGenomeSize = 20;
+        fullGenomeSize = 0;
         switch(function) {
             case 0: {
                 populationSize = 250;
@@ -160,6 +183,12 @@ public class player27 implements ContestSubmission {
                 w = 0.86;
                 phi1 = 0.07;
                 phi2 = 0.07;
+
+                difPopulationSize = 50;
+                f = 0.15;
+                cr = 0.2;
+                base = 'b';
+                diffN = 1;
 
                 break;
             }
@@ -186,6 +215,12 @@ public class player27 implements ContestSubmission {
                 phi1 = 0.2;
                 phi2 = 0.7;
 
+                difPopulationSize = 50;
+                f = 0.5;
+                cr = 0.4;
+                base = 'b';
+                diffN = 1;
+
                 break;
             }
             case 2: {
@@ -211,6 +246,13 @@ public class player27 implements ContestSubmission {
                 w = 0.5;
                 phi1 = 0.05;
                 phi2 = 0.1;
+
+                difPopulationSize = 18;
+                f = 0.6714;
+                cr = 0.5026;
+                base = 'b';
+                diffN = 1;
+                // from http://www.hvass-labs.org/people/magnus/publications/pedersen10good-de.pdf
 
                 break;
             }
@@ -255,8 +297,12 @@ public class player27 implements ContestSubmission {
                 es = new CMAEvolutionaryStrategy(1, 10);
                 break;
             }
-            case "src.genetics.PSO": {
+            case "PSO": {
                 pso = new PSO(swarmSize, epochs, w, phi1, phi2, rng);
+                break;
+            }
+            case "DE": {
+                de = new DifferentialEvolution(epochs, difPopulationSize, f, cr, base, diffN, rng);
                 break;
             }
             default: {
@@ -268,7 +314,7 @@ public class player27 implements ContestSubmission {
 
     private void printAlgorithmProperties() {
         System.out.println("Properties:");
-        System.out.println("algorithmType=" + ga);
+        System.out.println("algorithmType=" + algorithmType);
         System.out.println("populationSize=" + populationSize);
         System.out.println("stagnancyThreshold=" + stagnancyThreshold);
         System.out.println("epurationDegree=" + epurationDegree);

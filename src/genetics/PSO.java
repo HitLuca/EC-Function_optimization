@@ -24,7 +24,7 @@ public class PSO {
         if (epochs == -1) {
             this.epochs = Integer.MAX_VALUE;
         } else {
-            this.epochs = epochs; //Math.min(epochs, (evaluations_limit_-population.getMaxSize())/(int) Math.ceil(selection.getSize()/pairSize));
+            this.epochs = epochs;
         }
 
         this.w = w;

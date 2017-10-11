@@ -177,7 +177,7 @@ class Particle {
 
     public void move(ContestEvaluation evaluation) {
         for (int i = 0; i < Swarm.GENOME_SIZE; i++) {
-            genome[i] += velocity[i];
+            genome[i] = clip(genome[i] + velocity[i]);
         }
         evaluate(evaluation);
     }
@@ -186,6 +186,12 @@ class Particle {
         for (int i = 0; i < Swarm.GENOME_SIZE; i++) {
             velocity[i] = w * velocity[i] + phi1 * rng.nextDouble() * (historicalBest[i] - genome[i]) + phi2 * rng.nextDouble() * (globalBest[i] - genome[i]);
         }
+    }
+
+    public double clip(double value){
+        if (value < min) return min;
+        else if (value > max) return max;
+        else return value;
     }
 
 }

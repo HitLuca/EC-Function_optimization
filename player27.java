@@ -33,6 +33,7 @@ public class player27 implements ContestSubmission {
     private int epochs;
     private int elitism;
     private int replacementNumber;
+    private int swarmSize;
     private double w;
     private double phi1;
     private double phi2;
@@ -155,6 +156,7 @@ public class player27 implements ContestSubmission {
                 parentsNumber = 2;
                 selectionPressure = 1.75;
 
+                swarmSize = 50;
                 w = 0.86;
                 phi1 = 0.07;
                 phi2 = 0.07;
@@ -178,6 +180,12 @@ public class player27 implements ContestSubmission {
 
                 parentsNumber = 2;
                 selectionPressure = 1.75;
+
+                swarmSize = 80;
+                w = 0.8;
+                phi1 = 0.2;
+                phi2 = 0.7;
+
                 break;
             }
             case 2: {
@@ -198,6 +206,12 @@ public class player27 implements ContestSubmission {
 
                 parentsNumber = 2;
                 selectionPressure = 1.75;
+
+                swarmSize = 500;
+                w = 0.5;
+                phi1 = 0.05;
+                phi2 = 0.1;
+
                 break;
             }
         }
@@ -242,11 +256,7 @@ public class player27 implements ContestSubmission {
                 break;
             }
             case "src.genetics.PSO": {
-                populationSize = 80;
-                w = 0.8;
-                phi1 = 0.2;
-                phi2 = 0.8;
-                pso = new PSO(populationSize, epochs, w, phi1, phi2, rng);
+                pso = new PSO(swarmSize, epochs, w, phi1, phi2, rng);
                 break;
             }
             default: {

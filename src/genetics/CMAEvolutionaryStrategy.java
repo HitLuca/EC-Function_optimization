@@ -6,7 +6,6 @@ import org.apache.commons.math3.special.Gamma;
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CMAEvolutionaryStrategy {
@@ -41,7 +40,18 @@ public class CMAEvolutionaryStrategy {
     private RealVector m;
     private double sigma;
 
+    private double stagnancyStep = 0.00000000000000000000000000001;
+    private int stagnancyLimit = 30;
+
+    double[] sigmas = new double[]{0.2, 0.3, 0.4, 0.5, 0.6};
+    int selected_sigma_index = 1;
+
     public CMAEvolutionaryStrategy(int mu, int lambda)
+    {
+        init(mu, lambda);
+    }
+
+    private void init(int mu, int lambda)
     {
         this.lambda = lambda;
         this.mu = mu;
@@ -55,28 +65,43 @@ public class CMAEvolutionaryStrategy {
 
         //Initialize weights uniformly
         weights = zerosVector(mu).mapAdd(1.0/mu);
+//        weights = new ArrayRealVector(new double[]{0.5, 0.25, 0.1125, 0.05625, 0.05625});
+
+
         double weights_norm = weights.getNorm();
         double sumOfSq = weights_norm*weights_norm;
+//        this.lambda = (int)(1/sumOfSq);
+//        lambda = (int)(1/sumOfSq);
+
+        this.mu = (int)(lambda/2);
+        System.out.println("lambda");
+        System.out.println(lambda);
+        System.out.println("mu");
+        System.out.println(mu);
 
         //Initialize parameters with the recommended values
-        mu_w = 1/sumOfSq;
+        mu_w = 0.3*lambda;//1/sumOfSq;
         c_c = 4.0/ N;
         c_sigma = 4.0/ N; //3 / N ?
         c_1 = 2.0/(N * N);
         c_mu = mu_w/(N * N);
-        d_sigma = 1 + Math.sqrt(mu_w/ N);
+        d_sigma = 1 + Math.sqrt(mu_w/ (double)N);
 
         p_c = zerosVector(N);
         p_sigma = zerosVector(N);
 
         //Initial distribution params!
         m = zerosVector(N);
-        sigma = 1;
+        sigma = 0.2;
     }
 
     public void run(ContestEvaluation evaluation, int epochs)
     {
         RealVector m_old = m.copy();
+        double best_old = 0;
+        double best;
+        int stagnancyCounter = 0;
+
         for(int ep=0; ep<epochs; ep++) {
             ///SAMPLE AND EVALUATE
 
@@ -86,7 +111,30 @@ public class CMAEvolutionaryStrategy {
 
             xs.add(parent);
             xs.sort(new Individual.FitnessComparator().reversed());
+
+            best = xs.get(0).getFitness();
+
             System.out.println("Best: " + xs.get(0).getFitness());
+            if (best - best_old < stagnancyStep)
+            {
+                stagnancyCounter ++;
+                if(stagnancyCounter > stagnancyLimit) {
+                    init(mu, lambda);
+                    m_old = zerosVector(N);
+                    best_old = 0;
+                    stagnancyCounter = 0;
+                    sigma = sigmas[selected_sigma_index];
+                    selected_sigma_index ++;
+                    selected_sigma_index = selected_sigma_index % sigmas.length;
+                    continue;
+                }
+            }
+            else
+            {
+                stagnancyCounter = 0;
+            }
+
+            best_old = xs.get(0).getFitness();
 
             //SELECTION
             xs = xs.subList(0, mu);
@@ -100,7 +148,7 @@ public class CMAEvolutionaryStrategy {
 
             //UPDATE M
             m_old = m.copy();
-            RealVector yw = averageVectors(ys);
+            RealVector yw = weightVectors(ys);
             m = yw.mapMultiply(sigma).add(m);
 
             ///COVARIANCE CUMMULATION
@@ -115,7 +163,16 @@ public class CMAEvolutionaryStrategy {
             ///CSA
 
             //Computing C^(-1/2)
+
             EigenDecomposition e = new EigenDecomposition(C);
+            if(!e.getSolver().isNonSingular()) {
+                System.out.println("Add noise");
+                DiagonalMatrix error_C = new DiagonalMatrix(zerosVector(N).mapAdd(0.0000000001).toArray());
+                MultivariateNormalDistribution mvd = new MultivariateNormalDistribution(zerosVector(N).toArray(), error_C.getData());
+                C = C.add(error_C);
+                e = new EigenDecomposition(C);
+
+            }
             RealMatrix C_mod = MatrixUtils.inverse(e.getSquareRoot());
 
             RealVector p_sigma_addend2 = C_mod.operate(yw).mapMultiply(Math.sqrt(1 - (1 - c_sigma) * (1 - c_sigma)) * Math.sqrt(mu_w));
@@ -139,26 +196,28 @@ public class CMAEvolutionaryStrategy {
                 ys_product.add(y.outerProduct(y));
             }
 
-            RealMatrix C_addend3 = averageMatrices(ys_product).scalarMultiply(c_mu);
+            RealMatrix C_addend3 = weightMatrices(ys_product).scalarMultiply(c_mu);
             C = C_addend1.add(C_addend2.add(C_addend3));
 
             ///UPDATE SIGMA
 
             double expectation = Math.sqrt(2) * Gamma.gamma((N + 1) / 2.0) / Gamma.gamma(N / 2.0);
-            sigma = sigma * Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
+//            sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm()/ expectation) - 1));
 
 //            System.out.println(Arrays.toString(m.toArray()));
 
-            System.out.println("Epoch: " + ep + " Fitness: " + (double) evaluation.evaluate(m.toArray()));
+            System.out.println("Epoch: " + ep + " Fitness: " + (double) evaluation.evaluate(m.toArray())
+            + " sigma: " + sigma);
         }
     }
 
-    public ArrayList<Individual> sample(ContestEvaluation evaluation)
-    {
+    public ArrayList<Individual> sample(ContestEvaluation evaluation) {
         ArrayList<Individual> sampled = new ArrayList<>();
-        MultivariateNormalDistribution mnd = new MultivariateNormalDistribution(m.toArray(), C.getData());
+        MultivariateNormalDistribution mnd;
 
-        for(int i=0; i<lambda;i++) {
+        mnd = new MultivariateNormalDistribution(zerosVector(N).toArray(), C.getData());
+
+        for (int i = 0; i < lambda; i++) {
             RealVector vector = new ArrayRealVector(mnd.sample());
             vector = vector.mapMultiply(sigma).add(m);
             sampled.add(new Individual(vector.toArray(), evaluation));
@@ -167,37 +226,51 @@ public class CMAEvolutionaryStrategy {
         return sampled;
     }
 
+    public static void printArray(double matrix[][]) {
+        for (int row = 0; row < matrix.length; row++) {
+            for (int column = 0; column < matrix[row].length; column++) {
+                System.out.print(matrix[row][column] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public void updateMean(ArrayList<RealVector> vs)
     {
-        m = averageVectors(vs);
+        m = weightVectors(vs);
     }
 
-    private RealVector averageVectors(List<RealVector> vs)
+    private RealVector weightVectors(List<RealVector> vs)
     {
-        RealVector averaged = zerosVector(N);
+        RealVector weighted = zerosVector(N);
 
-        for (RealVector v: vs)
-        {
-            averaged = averaged.add(v);
+        for (int i=0; i<mu; i++) {
+            double weight = weights.getEntry(i);
+            weighted = weighted.add(vs.get(i).mapMultiply(weight));
         }
 
-        averaged.mapDivideToSelf(vs.size());
+//        for (RealVector v: vs)
+//        {
+//            averaged = averaged.add(v);
+//        }
+//
+//        averaged.mapDivideToSelf(vs.size());
 
-        return averaged;
+        return weighted;
     }
 
-    private RealMatrix averageMatrices(ArrayList<RealMatrix> ms)
+    private RealMatrix weightMatrices(ArrayList<RealMatrix> ms)
     {
-        RealMatrix averaged = zerosMatrix(N);
+        RealMatrix weighted = zerosMatrix(N);
 
-        for (RealMatrix m: ms)
-        {
-            averaged = averaged.add(m);
+
+        for (int i=0; i<mu; i++) {
+            double weight = weights.getEntry(i);
+            weighted = weighted.add(ms.get(i).scalarMultiply(weight));
+
         }
 
-        averaged = averaged.scalarMultiply(1.0/ms.size());
-
-        return averaged;
+        return weighted;
     }
 
     private RealVector zerosVector(int dim)

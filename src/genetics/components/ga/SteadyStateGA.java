@@ -71,9 +71,9 @@ public class SteadyStateGA extends AGA {
                     System.out.println(epoch + ", " + population.getStatistics());
                 }
 
-                if(population.gotFitnessImprovement()) {
+                if(population.getStagnancyLevel() == 0) {
                     ((MutationGaussian)mutation).increaseMutation();
-                } else {
+                } else if(population.getStagnancyLevel() > 20){
                     ((MutationGaussian)mutation).decreaseMutation();
                 }
             }

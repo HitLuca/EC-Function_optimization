@@ -100,8 +100,8 @@ public class Population {
         oldBest = bestFitness;
     }
 
-    public boolean gotFitnessImprovement() {
-        return stagnancy.gotFitnessImprovement();
+    public int getStagnancyLevel() {
+        return stagnancy.getStagnancyLevel();
     }
 
     public void sortIndividuals() {

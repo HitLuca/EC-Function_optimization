@@ -60,7 +60,7 @@ public class Stagnancy {
         return population;
     }
 
-    public boolean gotFitnessImprovement() {
-        return stagnancyLevel < 5;
+    public int getStagnancyLevel() {
+        return stagnancyLevel;
     }
 }

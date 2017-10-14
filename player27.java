@@ -14,11 +14,8 @@ import src.genetics.components.selection.SelectionLinearRanking;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 import java.util.Properties;
-import java.util.Random;
 
 public class player27 implements ContestSubmission {
     public Random rng;
@@ -52,8 +49,6 @@ public class player27 implements ContestSubmission {
     private boolean hasStructure;
     private boolean isSeparable;
 
-    private int function;
-
     public player27() {
         rng = new Random();
     }
@@ -69,47 +64,30 @@ public class player27 implements ContestSubmission {
     }
 
     public void setEvaluation(ContestEvaluation evaluation) {
-        // Set evaluation problem used in the run
         evaluation_ = evaluation;
 
-        // Get evaluation properties
         Properties props = evaluation.getProperties();
-        // Get evaluation limit
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
-        // Property keys depend on specific evaluation
-        // E.g. double param = Double.parseDouble(props.getProperty("property_name"));
         isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
         hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
-
-        setFunction();
     }
 
-    private void setFunction() {
-        if(!isMultimodal) {
-            function = 0;
-        } else if (hasStructure) {
-            function = 1;
-        } else {
-            function = 2;
-        }
-    }
     public void run() {
         printProperties(evaluation_);
 
         rng.setSeed(System.currentTimeMillis());
-//		rng.setSeed(Long.MAX_VALUE);
 
         loadProperties();
-        printAlgorithmProperties();
 
-        try {
-            es.run(evaluation_, 999999999);
-        } catch (Exception e) {
+        if (algorithmType.equals("CMA-ES")) {
+            es.run(evaluation_, epochs);
+        } else {
+            ga.run();
         }
     }
 
-    public void printProperties(ContestEvaluation evaluation) {
+    private void printProperties(ContestEvaluation evaluation) {
         Properties p = evaluation.getProperties();
         int maxEvaluations = Integer.parseInt(p.getProperty("Evaluations"));
         boolean isMultimodal = Boolean.parseBoolean(p.getProperty("Multimodal"));
@@ -121,71 +99,36 @@ public class player27 implements ContestSubmission {
     }
 
     private void loadProperties() {
-//		algorithmType = "Generational";
-//        algorithmType = "SteadyState";
-      algorithmType = "CMA-ES";
+        epochs = -1;
+        mutationSigma = 0.05;
+        mutationProbability = 1;
+        parentsNumber = 2;
 
-        fullGenomeSize = 20;
-        switch(function) {
-            case 0: {
-                populationSize = 250;
+        algorithmType = "CMA-ES";
 
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
-
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 50;
-
-
-                mutationSigma = 0.1;
-                mutationProbability = 0.9;
-
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
-            }
-            case 1: {
-                populationSize = 1000;
-
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
-
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 100;
-
-
-                mutationSigma = 0.1;
-                mutationProbability = 0.9;
-
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
-            }
-            case 2: {
-                populationSize = 2500;
-                fullGenomeSize = 0;
-
-                stagnancyThreshold = 100;
-                wipeoutThreshold = 250;
-                epurationDegree = 0.7;
-
-                epochs = -1;
-                elitism = 3;
-                replacementNumber = 150;
-
-
-                mutationSigma = 0.01;
-                mutationProbability = 0.9;
-
-                parentsNumber = 2;
-                selectionPressure = 1.75;
-                break;
-            }
-        }
+//        if (isMultimodal) {
+//            algorithmType = "SteadyState";
+//
+//            if (evaluations_limit_ <= 100000) {
+//                populationSize = evaluations_limit_ / 100;
+//            } else {
+//                populationSize = evaluations_limit_ / 1000;
+//            }
+//
+//            replacementNumber = populationSize / 10;
+//            selectionPressure = 1.75;
+//
+//            stagnancyThreshold = evaluations_limit_ / 4000;
+//            wipeoutThreshold = evaluations_limit_ / 2000;
+//            epurationDegree = 0.7;
+//        } else {
+//            algorithmType = "Generational";
+//            populationSize = 4;
+//            elitism = 1;
+//
+//            selectionPressure = 2;
+//            stagnancyThreshold = 0;
+//        }
 
         stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
         crossover = new CrossoverAverageWeighted(rng);
@@ -197,7 +140,6 @@ public class player27 implements ContestSubmission {
             case "Generational": {
                 ga = new GenerationalGA(rng,
                         populationSize,
-                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,
@@ -211,7 +153,6 @@ public class player27 implements ContestSubmission {
             case "SteadyState": {
                 ga = new SteadyStateGA(rng,
                         populationSize,
-                        fullGenomeSize,
                         stagnancy,
                         selection,
                         crossover,
@@ -231,25 +172,5 @@ public class player27 implements ContestSubmission {
                 break;
             }
         }
-    }
-
-    private void printAlgorithmProperties() {
-        System.out.println("Properties:");
-        System.out.println("algorithmType=" + ga);
-        System.out.println("populationSize=" + populationSize);
-        System.out.println("stagnancyThreshold=" + stagnancyThreshold);
-        System.out.println("epurationDegree=" + epurationDegree);
-        System.out.println("epochs=" + epochs);
-        System.out.println("elitism=" + elitism);
-        System.out.println("replacementNumber=" + replacementNumber);
-        System.out.println("crossover=" + crossover);
-        System.out.println("mutationSigma=" + mutationSigma);
-        System.out.println("mutationProbability=" + mutationProbability);
-        System.out.println("mutation=" + mutation);
-        System.out.println("parentsNumber=" + parentsNumber);
-        System.out.println("selectionPressure=" + selectionPressure);
-        System.out.println("selection=" + selection);
-        System.out.println("survival=" + survival);
-        System.out.println("EndProperties\n");
     }
 }

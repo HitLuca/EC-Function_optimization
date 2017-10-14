@@ -30,7 +30,7 @@ public class GenerationalGA extends AGA {
         this.stagnancy = stagnancy;
     }
 
-    public void run() throws IOException {
+    public void run() {
         int epoch;
         System.out.println("Scores:");
 //        System.out.println("epoch, mean fitness, best fitness, worst fitness");

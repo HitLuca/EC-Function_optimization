@@ -25,7 +25,7 @@ public class SteadyStateGA extends AGA {
         this.replacementNumber = replacementNumber;
     }
 
-    public void run() throws IOException {
+    public void run() {
         System.out.println("Scores:");
         try {
             for (int epoch = 0; epoch < epochs; epoch++) {

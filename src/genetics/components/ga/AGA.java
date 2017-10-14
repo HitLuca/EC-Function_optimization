@@ -61,7 +61,7 @@ public abstract class AGA {
         }
     }
 
-    public abstract void run() throws IOException;
+    public abstract void run();
 
     @Override
     public String toString() {

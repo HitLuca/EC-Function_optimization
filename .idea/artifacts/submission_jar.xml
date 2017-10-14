@@ -4,6 +4,7 @@
     <root id="archive" name="EC-Project.jar">
       <element id="extracted-dir" path="$PROJECT_DIR$/contest.jar" path-in-jar="/" />
       <element id="module-output" name="EC-Project" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/commons-math3-3.6.1/commons-math3.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -35,13 +35,14 @@ public class CMAEvolutionaryStrategy {
     private double d_sigma;
     private RealVector p_c;
     private RealVector p_sigma;
+    private double expectation;
 
     //Strategy Gaussian parameters
     private RealVector m;
     private double sigma;
 
     private double stagnancyStep = 0.00000000000000000000000000001;
-    private int stagnancyLimit = 30;
+    private int stagnancyLimit = 300000000;
 
     double[] sigmas = new double[]{0.2, 0.3, 0.4, 0.5, 0.6};
     int selected_sigma_index = 1;
@@ -92,7 +93,9 @@ public class CMAEvolutionaryStrategy {
 
         //Initial distribution params!
         m = zerosVector(N);
-        sigma = 0.2;
+        sigma = 0.5;
+
+        expectation = Math.sqrt(2) * Gamma.gamma((N + 1) / 2.0) / Gamma.gamma(N / 2.0);
     }
 
     public void run(ContestEvaluation evaluation, int epochs)
@@ -102,19 +105,20 @@ public class CMAEvolutionaryStrategy {
         double best;
         int stagnancyCounter = 0;
 
+
         for(int ep=0; ep<epochs; ep++) {
             ///SAMPLE AND EVALUATE
 
             List<Individual> xs = sample(evaluation);
             Individual parent = new Individual(m_old.toArray(), evaluation);
-            System.out.println(parent.getFitness());
+//            System.out.println(parent.getFitness());
 
             xs.add(parent);
             xs.sort(new Individual.FitnessComparator().reversed());
 
             best = xs.get(0).getFitness();
 
-            System.out.println("Best: " + xs.get(0).getFitness());
+//            System.out.println("Best: " + xs.get(0).getFitness());
             if (best - best_old < stagnancyStep)
             {
                 stagnancyCounter ++;
@@ -151,7 +155,7 @@ public class CMAEvolutionaryStrategy {
             RealVector yw = weightVectors(ys);
             m = yw.mapMultiply(sigma).add(m);
 
-            ///COVARIANCE CUMMULATION
+            ///COVARIANCE ACCUMULATION
 
             double indicator = 0;
             if (p_sigma.getNorm() <= 1.5 * Math.sqrt(N))
@@ -163,46 +167,23 @@ public class CMAEvolutionaryStrategy {
             ///CSA
 
             //Computing C^(-1/2)
-
-            EigenDecomposition e = new EigenDecomposition(C);
-            if(!e.getSolver().isNonSingular()) {
-                System.out.println("Add noise");
-                DiagonalMatrix error_C = new DiagonalMatrix(zerosVector(N).mapAdd(0.0000000001).toArray());
-                MultivariateNormalDistribution mvd = new MultivariateNormalDistribution(zerosVector(N).toArray(), error_C.getData());
-                C = C.add(error_C);
-                e = new EigenDecomposition(C);
-
-            }
-            RealMatrix C_mod = MatrixUtils.inverse(e.getSquareRoot());
+            RealMatrix C_mod = inverseSquareRoot(C);
 
             RealVector p_sigma_addend2 = C_mod.operate(yw).mapMultiply(Math.sqrt(1 - (1 - c_sigma) * (1 - c_sigma)) * Math.sqrt(mu_w));
 
             p_sigma = p_sigma.mapMultiply(1 - c_sigma).add(p_sigma_addend2);
 
-            ///UPDATE C
+            // UPDATE C
 //        double indicatorSq = 0;
 //        double p_sigma_norm = p_sigma.getNorm();
 //        if(p_sigma_norm*p_sigma_norm <= 1.5*Math.sqrt(N))
 //            indicatorSq = 1;
 //
 //        double c_s = (1-indicatorSq)*c_1*c_c*(2-c_c);
+            updateC(ys);
 
-            RealMatrix C_addend1 = C.scalarMultiply(1 - c_1 - c_mu); // + c_s
-            RealMatrix C_addend2 = p_c.outerProduct(p_c).scalarMultiply(c_1);
-
-            ArrayList<RealMatrix> ys_product = new ArrayList<>();
-
-            for (RealVector y : ys) {
-                ys_product.add(y.outerProduct(y));
-            }
-
-            RealMatrix C_addend3 = weightMatrices(ys_product).scalarMultiply(c_mu);
-            C = C_addend1.add(C_addend2.add(C_addend3));
-
-            ///UPDATE SIGMA
-
-            double expectation = Math.sqrt(2) * Gamma.gamma((N + 1) / 2.0) / Gamma.gamma(N / 2.0);
-//            sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm()/ expectation) - 1));
+            // UPDATE SIGMA
+            sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm()/ expectation) - 1));
 
 //            System.out.println(Arrays.toString(m.toArray()));
 
@@ -240,8 +221,7 @@ public class CMAEvolutionaryStrategy {
         m = weightVectors(vs);
     }
 
-    private RealVector weightVectors(List<RealVector> vs)
-    {
+    private RealVector weightVectors(List<RealVector> vs) {
         RealVector weighted = zerosVector(N);
 
         for (int i=0; i<mu; i++) {
@@ -259,8 +239,7 @@ public class CMAEvolutionaryStrategy {
         return weighted;
     }
 
-    private RealMatrix weightMatrices(ArrayList<RealMatrix> ms)
-    {
+    private RealMatrix weightMatrices(ArrayList<RealMatrix> ms) {
         RealMatrix weighted = zerosMatrix(N);
 
 
@@ -273,8 +252,7 @@ public class CMAEvolutionaryStrategy {
         return weighted;
     }
 
-    private RealVector zerosVector(int dim)
-    {
+    private RealVector zerosVector(int dim) {
         double[] vArray = new double[dim];
         for(int i=0; i<dim; i++)
             vArray[i]=0;
@@ -282,9 +260,34 @@ public class CMAEvolutionaryStrategy {
         return new ArrayRealVector(vArray);
     }
 
-    private RealMatrix zerosMatrix(int dim)
-    {
+    private RealMatrix zerosMatrix(int dim) {
         RealVector zeros = zerosVector(dim);
         return zeros.outerProduct(zeros);
+    }
+
+    private RealMatrix inverseSquareRoot(RealMatrix C) {
+        EigenDecomposition e = new EigenDecomposition(C);
+        if(!e.getSolver().isNonSingular()) {
+            System.out.println("Add noise");
+            DiagonalMatrix error_C = new DiagonalMatrix(zerosVector(N).mapAdd(0.0000000001).toArray());
+            MultivariateNormalDistribution mvd = new MultivariateNormalDistribution(zerosVector(N).toArray(), error_C.getData());
+            C = C.add(error_C);
+            e = new EigenDecomposition(C);
+        }
+
+        return MatrixUtils.inverse(e.getSquareRoot());
+    }
+
+    private void updateC(List<RealVector> ys) {
+        RealMatrix C_addend1 = C.scalarMultiply(1 - c_1 - c_mu); // + c_s
+        RealMatrix C_addend2 = (p_c.outerProduct(p_c)).scalarMultiply(c_1);
+
+        ArrayList<RealMatrix> ys_product = new ArrayList<>();
+        for (RealVector y : ys) {
+            ys_product.add(y.outerProduct(y));
+        }
+        RealMatrix C_addend3 = weightMatrices(ys_product).scalarMultiply(c_mu);
+
+        C = C_addend1.add(C_addend2.add(C_addend3));
     }
 }

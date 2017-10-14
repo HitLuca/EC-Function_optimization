@@ -104,10 +104,8 @@ public class player27 implements ContestSubmission {
         printAlgorithmProperties();
 
         try {
-            ga.run();
+            es.run(evaluation_, 999999999);
         } catch (Exception e) {
-            e.printStackTrace();
-            // TODO: fix NullPointerException
         }
     }
 
@@ -124,8 +122,8 @@ public class player27 implements ContestSubmission {
 
     private void loadProperties() {
 //		algorithmType = "Generational";
-        algorithmType = "SteadyState";
-//      algorithmType = "CMA-ES";
+//        algorithmType = "SteadyState";
+      algorithmType = "CMA-ES";
 
         fullGenomeSize = 20;
         switch(function) {
@@ -225,7 +223,7 @@ public class player27 implements ContestSubmission {
                 break;
             }
             case "CMA-ES": {
-                es = new CMAEvolutionaryStrategy(1, 10);
+                es = new CMAEvolutionaryStrategy(5, 10);
                 break;
             }
             default: {

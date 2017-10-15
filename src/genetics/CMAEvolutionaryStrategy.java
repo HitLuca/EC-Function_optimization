@@ -35,7 +35,7 @@ public class CMAEvolutionaryStrategy {
     private double sigma;
 
     private double stagnancyStep = 1e-10;
-    private int stagnancyLimit = (int) 20;
+    private int stagnancyLimit = 10;
 
     private double[] sigmas = new double[]{0.5, 0.3, 0.4, 0.1, 0.6};
     private int selected_sigma_index = 0;
@@ -289,5 +289,8 @@ public class CMAEvolutionaryStrategy {
         sigma = sigmas[selected_sigma_index];
         selected_sigma_index ++;
         selected_sigma_index = selected_sigma_index % sigmas.length;
+        if(selected_sigma_index == 0) {
+            stagnancyLimit += 5;
+        }
     }
 }

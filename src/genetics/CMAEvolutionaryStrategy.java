@@ -5,7 +5,6 @@ import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.special.Gamma;
 import org.vu.contest.ContestEvaluation;
 
-import javax.management.BadAttributeValueExpException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,30 +33,34 @@ public class CMAEvolutionaryStrategy {
     private RealVector m;
     private double sigma;
 
-    private double stagnancyStep = 1e-10;
+    private double stagnancyStep = 1e-15;
     private int stagnancyLimit = 10;
+    private double stoppingThreshold = 10.0 - 1e-4;
 
     private double[] sigmas = new double[]{0.5, 0.3, 0.4, 0.1, 0.6};
     private int selected_sigma_index = 0;
     private double sigma_threshold_high = 3;
     private double sigma_threshold_low = 1e-5;
 
-    private boolean useFixedSigma = false;
+    private boolean useFixedSigma = true;
 
     private double best_old = 0;
     private double best;
     private double algorithmBest;
     private int stagnancyCounter = 0;
     private RealVector m_old;
+
+    private boolean printOutput;
     // endregion
 
-    public CMAEvolutionaryStrategy(int mu, int lambda) {
+    public CMAEvolutionaryStrategy(int mu, int lambda, boolean printOutput) {
         init(mu, lambda);
     }
 
     private void init(int mu, int lambda) {
         this.lambda = lambda;
         this.mu = mu;
+        this.printOutput = printOutput;
         try{zerosVector(1);}
         catch (Exception e)
         {
@@ -150,10 +153,16 @@ public class CMAEvolutionaryStrategy {
                 resetParameters();
             }
 
-            System.out.println("Epoch: " + ep
-                    + " Best Fitness: " + algorithmBest
-                    + " Fitness: " + best
-                    + " sigma: " + sigma);
+            if (printOutput) {
+                System.out.println("Epoch: " + ep
+                        + " Best Fitness: " + algorithmBest
+                        + " Fitness: " + best
+                        + " sigma: " + sigma);
+            }
+
+            if(algorithmBest > stoppingThreshold) {
+                return;
+            }
         }
     }
 

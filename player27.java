@@ -164,7 +164,7 @@ public class player27 implements ContestSubmission {
                 break;
             }
             case "CMA-ES": {
-                es = new CMAEvolutionaryStrategy(5, 10);
+                es = new CMAEvolutionaryStrategy(5, 15, false);
                 break;
             }
             default: {

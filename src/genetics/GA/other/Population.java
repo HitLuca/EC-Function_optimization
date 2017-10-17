@@ -1,14 +1,12 @@
-package src.genetics;
+package src.genetics.GA.other;
 
 import org.vu.contest.ContestEvaluation;
-import src.genetics.GA.FitnessSharing;
-import src.genetics.GA.Stagnancy;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Population {
-    public static int BASE_GENOME_SIZE = 10;
+    public static int GENOME_SIZE = 10;
 
     private ArrayList<Individual> population;
     private int maxSize;

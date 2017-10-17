@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class PSO {
+public class PSO extends AEA{
     private int epochs;
     private int popSize;
 
@@ -17,8 +17,10 @@ public class PSO {
     private Swarm population;
 
     private Random rng;
+    private ContestEvaluation evaluation;
 
-    public PSO(int popSize, int epochs, double w, double phi1, double phi2, Random rng) {
+    public PSO(int popSize, int epochs, double w, double phi1, double phi2, Random rng,
+               ContestEvaluation evaluation){
         this.popSize = popSize;
 
         if (epochs == -1) {
@@ -31,9 +33,12 @@ public class PSO {
         this.phi1 = phi1;
         this.phi2 = phi2;
         this.rng = rng;
+
+        this.evaluation = evaluation;
     }
 
-    public void run(ContestEvaluation evaluation) throws IOException {
+    @Override
+    public void run() {
         population = new Swarm(popSize, evaluation, rng);
         System.out.println("Scores:");
         try {
@@ -48,6 +53,12 @@ public class PSO {
         System.out.println("EndScores\n");
     }
 
+    @Override
+    public void printAlgorithmParameters() {
+        System.out.println("Properties:");
+        System.out.println("algorithmType = " + this.toString());
+        System.out.println("EndProperties\n");
+    }
 }
 
 class Swarm {

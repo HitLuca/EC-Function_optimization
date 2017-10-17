@@ -1,11 +1,11 @@
 package src.genetics.GA.crossover;
 
-import src.genetics.Individual;
+import src.genetics.GA.other.Individual;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static src.genetics.Population.BASE_GENOME_SIZE;
+import static src.genetics.GA.other.Population.BASE_GENOME_SIZE;
 
 public class CrossoverAverage extends ACrossover {
 

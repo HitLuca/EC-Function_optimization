@@ -1,10 +1,8 @@
-package src.genetics.GA.ga;
+package src.genetics.GA.other;
 
 import org.vu.contest.ContestEvaluation;
 import src.genetics.AEA;
-import src.genetics.GA.Stagnancy;
 import src.genetics.GA.crossover.ACrossover;
-import src.genetics.Population;
 import src.genetics.GA.mutation.AMutation;
 import src.genetics.GA.selection.ASelection;
 import src.genetics.GA.survival.ASurvival;

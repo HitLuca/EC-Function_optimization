@@ -1,18 +1,20 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.AEA;
-import src.genetics.ES.CMAEvolutionaryStrategy;
-import src.genetics.GA.Stagnancy;
+import src.genetics.CMAEvolutionaryStrategy;
+import src.genetics.DifferentialEvolution;
+import src.genetics.GA.other.Stagnancy;
 import src.genetics.GA.crossover.ACrossover;
 import src.genetics.GA.crossover.CrossoverAverageWeighted;
-import src.genetics.GA.ga.GenerationalGA;
-import src.genetics.GA.ga.SteadyStateGA;
+import src.genetics.GA.GenerationalGA;
+import src.genetics.GA.SteadyStateGA;
 import src.genetics.GA.mutation.AMutation;
 import src.genetics.GA.mutation.MutationGaussian;
 import src.genetics.GA.selection.ASelection;
 import src.genetics.GA.selection.SelectionLinearRanking;
 import src.genetics.GA.survival.ASurvival;
 import src.genetics.GA.survival.SurvivalBestFitness;
+import src.genetics.PSO;
 
 import java.util.Properties;
 import java.util.Random;
@@ -97,6 +99,8 @@ public class player27 implements ContestSubmission {
         String algorithmType = "CMA-ES";
 //        String algorithmType = "Generational";
 //        String algorithmType = "SteadyState";
+//        String algorithmType = "PSO";
+//        String algorithmType = "DE";
 
         switch (algorithmType) {
             case "Generational": {
@@ -109,6 +113,14 @@ public class player27 implements ContestSubmission {
             }
             case "CMA-ES": {
                 setupCMAES();
+                break;
+            }
+            case "PSO": {
+                setupPSO();
+                break;
+            }
+            case "DE": {
+                setupDE();
                 break;
             }
             default: {
@@ -181,5 +193,24 @@ public class player27 implements ContestSubmission {
                 epochs,
                 elitism,
                 printOutput);
+    }
+
+    private void setupPSO() {
+        int swarmSize = 50;
+        double w = 0.86;
+        double phi1 = 0.07;
+        double phi2 = 0.07;
+
+        ea = new PSO(swarmSize, epochs, w, phi1, phi2, rng, evaluation_);
+    }
+
+    private void setupDE() {
+        int difPopulationSize = 50;
+        double f = 0.5;
+        double cr = 0.4;
+        char base = 'b';
+        int diffN = 1;
+
+        ea = new DifferentialEvolution(epochs, difPopulationSize, f, cr, base, diffN, rng, evaluation_);
     }
 }

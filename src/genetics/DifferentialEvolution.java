@@ -5,7 +5,7 @@ import org.vu.contest.ContestEvaluation;
 import java.io.IOException;
 import java.util.*;
 
-public class DifferentialEvolution {
+public class DifferentialEvolution extends AEA {
     private int epochs;
     private int popSize;
 
@@ -17,14 +17,17 @@ public class DifferentialEvolution {
     private DiffPopulation population;
 
     private Random rng;
+    private ContestEvaluation evaluation;
 
-    public DifferentialEvolution(int epochs, int popSize, double f, double cr, char base, int diffN, Random rng) {
+    public DifferentialEvolution(int epochs, int popSize, double f, double cr, char base,
+                                 int diffN, Random rng, ContestEvaluation evaluation) {
         this.popSize = popSize;
         this.f = f;
         this.cr = cr;
         this.base = base;
         this.diffN = diffN;
         this.rng = rng;
+        this.evaluation = evaluation;
 
         if (epochs == -1) {
             this.epochs = Integer.MAX_VALUE;
@@ -34,7 +37,8 @@ public class DifferentialEvolution {
 
     }
 
-    public void run(ContestEvaluation evaluation) throws IOException {
+    @Override
+    public void run() {
         population = new DiffPopulation(evaluation, popSize, rng);
         System.out.println("Scores:");
         try {
@@ -48,6 +52,13 @@ public class DifferentialEvolution {
             throw e;
         }
         System.out.println("EndScores\n");
+    }
+
+    @Override
+    public void printAlgorithmParameters() {
+        System.out.println("Properties:");
+        System.out.println("algorithmType = " + this.toString());
+        System.out.println("EndProperties\n");
     }
 }
 

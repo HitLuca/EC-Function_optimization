@@ -1,7 +1,6 @@
-package src.genetics.GA;
+package src.genetics.GA.other;
 
 import org.vu.contest.ContestEvaluation;
-import src.genetics.Individual;
 import src.genetics.GA.mutation.MutationGaussian;
 
 import java.util.ArrayList;

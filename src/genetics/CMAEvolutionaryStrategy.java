@@ -1,13 +1,12 @@
-package src.genetics.ES;
+package src.genetics;
 
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.special.Gamma;
 import org.vu.contest.ContestEvaluation;
-import src.genetics.AEA;
-import src.genetics.Individual;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CMAEvolutionaryStrategy extends AEA {
@@ -107,11 +106,11 @@ public class CMAEvolutionaryStrategy extends AEA {
 
         for(int ep = 0; ep < epochs || epochs < 0; ep++) {
             // sample and evaluate
-            List<Individual> xs = sample(evaluation);
-            Individual parent = new Individual(m_old.toArray(), evaluation);
+            List<CMAIndividual> xs = sample(evaluation);
+            CMAIndividual parent = new CMAIndividual(m_old.toArray(), evaluation);
 
             xs.add(parent);
-            xs.sort(new Individual.FitnessComparator().reversed());
+            xs.sort(new CMAIndividual.FitnessComparator().reversed());
 
             double best = xs.get(0).getFitness();
 
@@ -137,7 +136,7 @@ public class CMAEvolutionaryStrategy extends AEA {
             xs = xs.subList(0, mu);
             List<RealVector> ys = new ArrayList<>();
 
-            for (Individual x : xs) {
+            for (CMAIndividual x : xs) {
                 RealVector y = new ArrayRealVector(x.getGenome());
                 y = y.subtract(m).mapDivide(sigma);
                 ys.add(y);
@@ -178,15 +177,15 @@ public class CMAEvolutionaryStrategy extends AEA {
         System.out.println("EndProperties\n");
     }
 
-    private ArrayList<Individual> sample(ContestEvaluation evaluation) {
-        ArrayList<Individual> sampled = new ArrayList<>();
+    private ArrayList<CMAIndividual> sample(ContestEvaluation evaluation) {
+        ArrayList<CMAIndividual> sampled = new ArrayList<>();
         MultivariateNormalDistribution mnd =
                 new MultivariateNormalDistribution(zerosVector(N).toArray(), C.getData());
 
         for (int i = 0; i < lambda; i++) {
             RealVector vector = new ArrayRealVector(mnd.sample());
             vector = vector.mapMultiply(sigma).add(m);
-            sampled.add(new Individual(vector.toArray(), evaluation));
+            sampled.add(new CMAIndividual(vector.toArray(), evaluation));
         }
         return sampled;
     }
@@ -283,6 +282,36 @@ public class CMAEvolutionaryStrategy extends AEA {
         selected_sigma_index = selected_sigma_index % sigmas.length;
         if(selected_sigma_index == 0) {
             stagnancyLimit += 5;
+        }
+    }
+}
+
+class CMAIndividual {
+    private double[] genome;
+    private double fitness;
+
+    public CMAIndividual(double[] genome, ContestEvaluation evaluation) {
+        this.genome = genome;
+        fitness = (double) evaluation.evaluate(genome);
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public double[] getGenome() {
+        return genome;
+    }
+
+    static public class FitnessComparator implements Comparator<CMAIndividual> {
+        // Used for sorting in ascending order
+        public int compare(CMAIndividual a, CMAIndividual b) {
+            if (a.getFitness() > b.getFitness())
+                return 1;
+            else if (a.getFitness() == b.getFitness())
+                return 0;
+            else
+                return -1;
         }
     }
 }

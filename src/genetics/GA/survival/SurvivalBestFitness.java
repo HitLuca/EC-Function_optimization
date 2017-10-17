@@ -1,7 +1,7 @@
 package src.genetics.GA.survival;
 
-import src.genetics.Individual;
-import src.genetics.Population;
+import src.genetics.GA.other.Individual;
+import src.genetics.GA.other.Population;
 
 import java.util.ArrayList;
 import java.util.Random;

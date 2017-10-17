@@ -1,7 +1,4 @@
-package src.genetics.GA;
-
-import src.genetics.Individual;
-import src.genetics.Population;
+package src.genetics.GA.other;
 
 import java.util.ArrayList;
 

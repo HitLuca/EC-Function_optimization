@@ -68,7 +68,7 @@ public class player27 implements ContestSubmission {
     }
 
     public void run() {
-        printOutput = true;
+        printOutput = false;
 
         rng.setSeed(System.currentTimeMillis());
 

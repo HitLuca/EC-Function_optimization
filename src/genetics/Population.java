@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Population {
-    public static final int BASE_GENOME_SIZE = 10;
-    public static int FULL_GENOME_SIZE = BASE_GENOME_SIZE;
+    public static int BASE_GENOME_SIZE = 10;
 
     private ArrayList<Individual> population;
     private int maxSize;
@@ -21,10 +20,7 @@ public class Population {
     private double bestFitness = -1;
     private double variance = -1;
 
-    private int stagnancyLevel = 0;
-    private int stagnancyThreshold = 0;
-    private double epurationDegree = 0;
-
+    private double oldBest = 0;
     private Random rng;
 
     private Stagnancy stagnancy;
@@ -37,30 +33,8 @@ public class Population {
         population = new ArrayList<>();
     }
 
-    public Population(Random rng, int maxSize, int genomeSize, Stagnancy stagnancy) {
-        this(rng, maxSize, stagnancy);
-
-        if (genomeSize > BASE_GENOME_SIZE)
-            FULL_GENOME_SIZE = genomeSize;
-    }
-
     public Population(Random rng, int maxSize, ContestEvaluation evaluation, Stagnancy stagnancy) {
         this(rng, maxSize, stagnancy);
-        initialize(evaluation);
-    }
-
-    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int stagnancyThreshold, double epurationDegree, Stagnancy stagnancy) {
-        this(rng, maxSize, stagnancy);
-        initialize(evaluation);
-        this.stagnancyThreshold = stagnancyThreshold;
-        this.epurationDegree = epurationDegree;
-    }
-
-    public Population(Random rng, int maxSize, ContestEvaluation evaluation, int genomeSize, Stagnancy stagnancy) {
-        this(rng, maxSize, stagnancy);
-        if (genomeSize > BASE_GENOME_SIZE)
-            FULL_GENOME_SIZE = genomeSize;
-
         initialize(evaluation);
     }
 
@@ -69,17 +43,9 @@ public class Population {
         this.maxSize = population.size();
         this.population = population;
     }
+    //endregion
 
-    public Population(Random rng, ArrayList<Individual> population, int genomeSize) {
-        this.rng = rng;
-        if (genomeSize > BASE_GENOME_SIZE)
-            FULL_GENOME_SIZE = genomeSize;
-
-        this.maxSize = population.size();
-        this.population = population;
-    }
-
-    public static void printPopulation(ArrayList<Individual> population) {
+    public void printPopulation() {
         for (Individual i : population) {
             System.out.println(i);
         }
@@ -89,9 +55,7 @@ public class Population {
         population = newPopulation;
     }
 
-    //endregion
-
-    protected void initialize(ContestEvaluation evaluation) {
+    private void initialize(ContestEvaluation evaluation) {
         for (int i = 0; i < maxSize; i++) {
             population.add(new Individual(rng, evaluation));
         }
@@ -123,25 +87,6 @@ public class Population {
         variance /= (population.size()-1);
     }
 
-    public String getStatistics() {
-        return meanFitness
-                + ", " + bestFitness
-                + ", " + worstFitness
-                + ", " + variance;
-    }
-
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    public int getCurrentSize() {
-        return population.size();
-    }
-
-    public ArrayList<Individual> getIndividuals() {
-        return population;
-    }
-
     public void addIndividuals(ArrayList<Individual> individuals) {
         population.addAll(individuals);
     }
@@ -151,16 +96,20 @@ public class Population {
             i.evaluate(evaluation);
         }
 
-        double old_best = bestFitness;
-        population = stagnancy.checkStagnancy(old_best, bestFitness, evaluation, population);
+        population = stagnancy.checkStagnancy(oldBest, bestFitness, evaluation, population);
+        oldBest = bestFitness;
+    }
+
+    public int getStagnancyLevel() {
+        return stagnancy.getStagnancyLevel();
     }
 
     public void sortIndividuals() {
-        population.sort(new Individual.FitnessComparator().reversed());
+        population.sort(new Individual.FitnessComparator());
     }
 
-    public ArrayList<Individual> getElites(int elitism) {
-        return new ArrayList<>(population.subList(0, elitism));
+    public void sortIndividualsReversed() {
+        population.sort(new Individual.FitnessComparator().reversed());
     }
 
     public void calculateSharedFitness() {
@@ -168,6 +117,11 @@ public class Population {
             ind.setFitness(FitnessSharing.calculateSharedFitness(ind, population));
         }
         updateStatistics();
+    }
+
+    //region Getters
+    public ArrayList<Individual> getElites(int elitism) {
+        return new ArrayList<>(population.subList(0, elitism));
     }
 
     public double getMeanFitness() {
@@ -185,4 +139,27 @@ public class Population {
     public double getVariance() {
         return variance;
     }
+
+    public String getStatistics() {
+        return meanFitness
+                + ", " + bestFitness
+                + ", " + worstFitness
+                + ", " + variance;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public int getCurrentSize() {
+        return population.size();
+    }
+
+    public int hashCode() {
+        return population.hashCode();
+    }
+    public ArrayList<Individual> getIndividuals() {
+        return population;
+    }
+    //endregion
 }

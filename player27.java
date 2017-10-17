@@ -2,15 +2,16 @@ import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 import src.genetics.CMAEvolutionaryStrategy;
 import src.genetics.components.Stagnancy;
-import src.genetics.components.crossover.ACrossover;
-import src.genetics.components.crossover.CrossoverAverageWeighted;
+import src.genetics.components.crossover.*;
 import src.genetics.components.ga.AGA;
 import src.genetics.components.ga.GenerationalGA;
 import src.genetics.components.ga.SteadyStateGA;
 import src.genetics.components.mutation.AMutation;
 import src.genetics.components.mutation.MutationGaussian;
 import src.genetics.components.selection.ASelection;
+import src.genetics.components.selection.SelectionFitnessProportional;
 import src.genetics.components.selection.SelectionLinearRanking;
+import src.genetics.components.selection.SelectionTournament;
 import src.genetics.components.survival.ASurvival;
 import src.genetics.components.survival.SurvivalBestFitness;
 
@@ -25,7 +26,6 @@ public class player27 implements ContestSubmission {
     private String algorithmType;
 
     private int populationSize;
-    private int fullGenomeSize;
     private int stagnancyThreshold;
     private int wipeoutThreshold;
     private double epurationDegree;
@@ -44,6 +44,8 @@ public class player27 implements ContestSubmission {
 
 	private AGA ga;
 	private CMAEvolutionaryStrategy es;
+
+	private boolean printOutput;
 
     private boolean isMultimodal;
     private boolean hasStructure;
@@ -79,6 +81,11 @@ public class player27 implements ContestSubmission {
         rng.setSeed(System.currentTimeMillis());
 
         loadProperties();
+
+        if (printOutput) {
+            printProperties(evaluation_);
+            printAlgorithmProperties();
+        }
 
         if (algorithmType.equals("CMA-ES")) {
             es.run(evaluation_, epochs);
@@ -172,5 +179,28 @@ public class player27 implements ContestSubmission {
                 break;
             }
         }
+        ga.setPrinting(printOutput);
+
+    }
+
+    private void printAlgorithmProperties() {
+        System.out.println("Properties:");
+        System.out.println("algorithmType=" + ga);
+        System.out.println("populationSize=" + populationSize);
+        System.out.println("stagnancyThreshold=" + stagnancyThreshold);
+        System.out.println("wipeoutThreshold=" + wipeoutThreshold);
+        System.out.println("epurationDegree=" + epurationDegree);
+        System.out.println("epochs=" + epochs);
+        System.out.println("elitism=" + elitism);
+        System.out.println("replacementNumber=" + replacementNumber);
+        System.out.println("crossover=" + crossover);
+        System.out.println("mutationSigma=" + mutationSigma);
+        System.out.println("mutationProbability=" + mutationProbability);
+        System.out.println("mutation=" + mutation);
+        System.out.println("parentsNumber=" + parentsNumber);
+        System.out.println("selectionPressure=" + selectionPressure);
+        System.out.println("selection=" + selection);
+        System.out.println("survival=" + survival);
+        System.out.println("EndProperties\n");
     }
 }

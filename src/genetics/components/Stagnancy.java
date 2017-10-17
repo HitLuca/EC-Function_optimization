@@ -3,6 +3,7 @@ package src.genetics.components;
 import org.vu.contest.ContestEvaluation;
 import src.genetics.Individual;
 import src.genetics.Population;
+import src.genetics.components.mutation.MutationGaussian;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,32 +32,35 @@ public class Stagnancy {
     }
 
     public ArrayList<Individual> checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation, ArrayList<Individual> population) {
-//        if (stagnancyThreshold == 0) {
-//            return population;
-//        }
-
-        if (newBest > oldBest) {
-            stagnancyLevel = 0;
-            wipeoutLevel = 0;
-        } else {
-            stagnancyLevel++;
-            wipeoutLevel++;
-        }
-
-        if (wipeoutLevel > wipeoutThreshold) {
-            population = epuration(0.99, population);
-            wipeoutLevel = 0;
-            stagnancyLevel = 0;
-            while (population.size() < populationMaxSize) {
-                population.add(new Individual(rng, evaluation));
+        if(stagnancyThreshold > 0) {
+            if (newBest > oldBest) {
+                stagnancyLevel = 0;
+                wipeoutLevel = 0;
+            } else {
+                stagnancyLevel++;
+                wipeoutLevel++;
             }
-        } else if (stagnancyLevel > stagnancyThreshold) {
-            population = epuration(epurationDegree, population);
-            stagnancyLevel = 0;
-            while (population.size() < populationMaxSize) {
-                population.add(new Individual(rng, evaluation));
+
+            if (wipeoutLevel > wipeoutThreshold) {
+                population = epuration(0.99, population);
+                wipeoutLevel = 0;
+                stagnancyLevel = 0;
+                while (population.size() < populationMaxSize) {
+                    population.add(new Individual(rng, evaluation));
+                }
+                MutationGaussian.resetMutation();
+            } else if (stagnancyLevel > stagnancyThreshold) {
+                population = epuration(epurationDegree, population);
+                stagnancyLevel = 0;
+                while (population.size() < populationMaxSize) {
+                    population.add(new Individual(rng, evaluation));
+                }
             }
         }
         return population;
+    }
+
+    public int getStagnancyLevel() {
+        return stagnancyLevel;
     }
 }

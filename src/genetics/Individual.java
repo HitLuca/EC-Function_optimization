@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Random;
 
 import static src.genetics.Population.BASE_GENOME_SIZE;
-import static src.genetics.Population.FULL_GENOME_SIZE;
 
 public class Individual {
     public static int objectCount = 0;
@@ -21,12 +20,9 @@ public class Individual {
         objectCount++;
         id = objectCount;
 
-        genome = new double[FULL_GENOME_SIZE];
+        genome = new double[BASE_GENOME_SIZE];
         for (int i = 0; i < BASE_GENOME_SIZE; i++)
             genome[i] = rng.nextDouble() * (max - min) + min;
-        for (int i = BASE_GENOME_SIZE; i < FULL_GENOME_SIZE; i++)
-            genome[i] = Math.pow(rng.nextGaussian(), 2);
-
         evaluate(evaluation, genome);
     }
 
@@ -79,7 +75,6 @@ public class Individual {
     public String toString() {
         return "Individual{" +
                 "id=" + id +
-                ", genome=" + Arrays.toString(genome) +
                 ", fitness=" + fitness +
                 '}';
     }
@@ -94,5 +89,9 @@ public class Individual {
             else
                 return -1;
         }
+    }
+
+    public int hashCode() {
+        return Double.hashCode(fitness);
     }
 }

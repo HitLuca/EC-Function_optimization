@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static src.genetics.Population.BASE_GENOME_SIZE;
-import static src.genetics.Population.FULL_GENOME_SIZE;
 
 public class CrossoverAverageWeighted extends ACrossover {
     public CrossoverAverageWeighted(Random rng) {
@@ -17,7 +16,7 @@ public class CrossoverAverageWeighted extends ACrossover {
     public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
         ArrayList<Individual> children = new ArrayList<>();
 
-        double[] childGenome = new double[FULL_GENOME_SIZE];
+        double[] childGenome = new double[BASE_GENOME_SIZE];
         double[] ratio = new double[parents.size()];
         double tot = 0.0;
 
@@ -37,8 +36,6 @@ public class CrossoverAverageWeighted extends ACrossover {
                 childGenome[i] += parents.get(j).getGenome()[i] * (ratio[j] / tot);
             }
         }
-
-        childGenome = averageExtraGenome(childGenome, parents);
 
         children.add(new Individual(childGenome));
         return children;

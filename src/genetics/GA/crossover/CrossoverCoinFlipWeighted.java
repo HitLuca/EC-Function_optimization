@@ -1,7 +1,6 @@
-package src.genetics.components.crossover;
+package src.genetics.GA.crossover;
 
 import src.genetics.Individual;
-import src.genetics.Population;
 
 import java.util.ArrayList;
 import java.util.Random;

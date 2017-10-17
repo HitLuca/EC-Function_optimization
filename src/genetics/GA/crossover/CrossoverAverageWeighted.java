@@ -1,4 +1,4 @@
-package src.genetics.components.crossover;
+package src.genetics.GA.crossover;
 
 import src.genetics.Individual;
 

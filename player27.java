@@ -1,51 +1,41 @@
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
-import src.genetics.CMAEvolutionaryStrategy;
-import src.genetics.components.Stagnancy;
-import src.genetics.components.crossover.*;
-import src.genetics.components.ga.AGA;
-import src.genetics.components.ga.GenerationalGA;
-import src.genetics.components.ga.SteadyStateGA;
-import src.genetics.components.mutation.AMutation;
-import src.genetics.components.mutation.MutationGaussian;
-import src.genetics.components.selection.ASelection;
-import src.genetics.components.selection.SelectionFitnessProportional;
-import src.genetics.components.selection.SelectionLinearRanking;
-import src.genetics.components.selection.SelectionTournament;
-import src.genetics.components.survival.ASurvival;
-import src.genetics.components.survival.SurvivalBestFitness;
+import src.genetics.AEA;
+import src.genetics.ES.CMAEvolutionaryStrategy;
+import src.genetics.GA.Stagnancy;
+import src.genetics.GA.crossover.ACrossover;
+import src.genetics.GA.crossover.CrossoverAverageWeighted;
+import src.genetics.GA.ga.GenerationalGA;
+import src.genetics.GA.ga.SteadyStateGA;
+import src.genetics.GA.mutation.AMutation;
+import src.genetics.GA.mutation.MutationGaussian;
+import src.genetics.GA.selection.ASelection;
+import src.genetics.GA.selection.SelectionLinearRanking;
+import src.genetics.GA.survival.ASurvival;
+import src.genetics.GA.survival.SurvivalBestFitness;
 
-import java.util.Random;
 import java.util.Properties;
+import java.util.Random;
 
 public class player27 implements ContestSubmission {
     public Random rng;
     ContestEvaluation evaluation_;
     private int evaluations_limit_;
 
-    private String algorithmType;
-
     private int populationSize;
     private int stagnancyThreshold;
     private int wipeoutThreshold;
     private double epurationDegree;
     private int epochs;
-    private int elitism;
-    private int replacementNumber;
-    private ACrossover crossover;
-    private double mutationSigma;
-    private double mutationProbability;
-    private AMutation mutation;
-    private int parentsNumber;
+
+    private double mutationSigma = 0.05;
+    private double mutationProbability = 1;
+    private int parentsNumber = 2;
     private double selectionPressure;
-    private ASelection selection;
-    private ASurvival survival;
-    private Stagnancy stagnancy;
 
-	private AGA ga;
-	private CMAEvolutionaryStrategy es;
+    private AEA ea;
 
-	private boolean printOutput;
+    private boolean printOutput;
 
     private boolean isMultimodal;
     private boolean hasStructure;
@@ -76,22 +66,18 @@ public class player27 implements ContestSubmission {
     }
 
     public void run() {
-        printProperties(evaluation_);
+        printOutput = true;
 
         rng.setSeed(System.currentTimeMillis());
 
-        loadProperties();
+        setupAlgorithm();
 
         if (printOutput) {
             printProperties(evaluation_);
-            printAlgorithmProperties();
+            ea.printAlgorithmParameters();
         }
 
-        if (algorithmType.equals("CMA-ES")) {
-            es.run(evaluation_, epochs);
-        } else {
-            ga.run();
-        }
+        ea.run();
     }
 
     private void printProperties(ContestEvaluation evaluation) {
@@ -105,73 +91,24 @@ public class player27 implements ContestSubmission {
         System.out.println();
     }
 
-    private void loadProperties() {
+    private void setupAlgorithm() {
         epochs = -1;
-        mutationSigma = 0.05;
-        mutationProbability = 1;
-        parentsNumber = 2;
 
-        algorithmType = "CMA-ES";
-
-//        if (isMultimodal) {
-//            algorithmType = "SteadyState";
-//
-//            if (evaluations_limit_ <= 100000) {
-//                populationSize = evaluations_limit_ / 100;
-//            } else {
-//                populationSize = evaluations_limit_ / 1000;
-//            }
-//
-//            replacementNumber = populationSize / 10;
-//            selectionPressure = 1.75;
-//
-//            stagnancyThreshold = evaluations_limit_ / 4000;
-//            wipeoutThreshold = evaluations_limit_ / 2000;
-//            epurationDegree = 0.7;
-//        } else {
-//            algorithmType = "Generational";
-//            populationSize = 4;
-//            elitism = 1;
-//
-//            selectionPressure = 2;
-//            stagnancyThreshold = 0;
-//        }
-
-        stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
-        crossover = new CrossoverAverageWeighted(rng);
-        mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
-        selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
-        survival = new SurvivalBestFitness(rng);
+        String algorithmType = "CMA-ES";
+//        String algorithmType = "Generational";
+//        String algorithmType = "SteadyState";
 
         switch (algorithmType) {
             case "Generational": {
-                ga = new GenerationalGA(rng,
-                        populationSize,
-                        stagnancy,
-                        selection,
-                        crossover,
-                        mutation,
-                        survival,
-                        evaluation_,
-                        epochs,
-                        elitism);
+                setupGGA();
                 break;
             }
             case "SteadyState": {
-                ga = new SteadyStateGA(rng,
-                        populationSize,
-                        stagnancy,
-                        selection,
-                        crossover,
-                        mutation,
-                        survival,
-                        evaluation_,
-                        epochs,
-                        replacementNumber);
+                setupSSGA();
                 break;
             }
             case "CMA-ES": {
-                es = new CMAEvolutionaryStrategy(5, 15, false);
+                setupCMAES();
                 break;
             }
             default: {
@@ -179,28 +116,70 @@ public class player27 implements ContestSubmission {
                 break;
             }
         }
-        ga.setPrinting(printOutput);
-
     }
 
-    private void printAlgorithmProperties() {
-        System.out.println("Properties:");
-        System.out.println("algorithmType=" + ga);
-        System.out.println("populationSize=" + populationSize);
-        System.out.println("stagnancyThreshold=" + stagnancyThreshold);
-        System.out.println("wipeoutThreshold=" + wipeoutThreshold);
-        System.out.println("epurationDegree=" + epurationDegree);
-        System.out.println("epochs=" + epochs);
-        System.out.println("elitism=" + elitism);
-        System.out.println("replacementNumber=" + replacementNumber);
-        System.out.println("crossover=" + crossover);
-        System.out.println("mutationSigma=" + mutationSigma);
-        System.out.println("mutationProbability=" + mutationProbability);
-        System.out.println("mutation=" + mutation);
-        System.out.println("parentsNumber=" + parentsNumber);
-        System.out.println("selectionPressure=" + selectionPressure);
-        System.out.println("selection=" + selection);
-        System.out.println("survival=" + survival);
-        System.out.println("EndProperties\n");
+    private void setupCMAES() {
+        ea = new CMAEvolutionaryStrategy(5, 15, evaluation_, epochs, printOutput);
+    }
+
+    private void setupSSGA() {
+        if (evaluations_limit_ <= 100000) {
+            populationSize = evaluations_limit_ / 100;
+        } else {
+            populationSize = evaluations_limit_ / 1000;
+        }
+
+        int replacementNumber = populationSize / 10;
+        selectionPressure = 1.75;
+
+        stagnancyThreshold = evaluations_limit_ / 4000;
+        wipeoutThreshold = evaluations_limit_ / 2000;
+        epurationDegree = 0.7;
+
+        Stagnancy stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
+        ACrossover crossover = new CrossoverAverageWeighted(rng);
+        AMutation mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
+        ASelection selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
+        ASurvival survival = new SurvivalBestFitness(rng);
+
+        ea = new SteadyStateGA(rng,
+                populationSize,
+                stagnancy,
+                selection,
+                crossover,
+                mutation,
+                survival,
+                evaluation_,
+                epochs,
+                replacementNumber,
+                printOutput);
+    }
+
+    private void setupGGA() {
+        populationSize = 4;
+        int elitism = 1;
+
+        selectionPressure = 2;
+        stagnancyThreshold = 0;
+        wipeoutThreshold = 0;
+        epurationDegree = 0;
+
+        Stagnancy stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
+        ACrossover crossover = new CrossoverAverageWeighted(rng);
+        AMutation mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
+        ASelection selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
+        ASurvival survival = new SurvivalBestFitness(rng);
+
+        ea = new GenerationalGA(rng,
+                populationSize,
+                stagnancy,
+                selection,
+                crossover,
+                mutation,
+                survival,
+                evaluation_,
+                epochs,
+                elitism,
+                printOutput);
     }
 }

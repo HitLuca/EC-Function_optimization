@@ -16,6 +16,7 @@ public class Individual {
     private int id;
     private int max = 5;
     private int min = -5;
+
     public Individual(Random rng, ContestEvaluation evaluation) {
         objectCount++;
         id = objectCount;

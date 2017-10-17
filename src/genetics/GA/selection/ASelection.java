@@ -1,4 +1,4 @@
-package src.genetics.components.selection;
+package src.genetics.GA.selection;
 
 import src.genetics.Individual;
 import src.genetics.Population;

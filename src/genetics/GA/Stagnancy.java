@@ -1,9 +1,8 @@
-package src.genetics.components;
+package src.genetics.GA;
 
 import org.vu.contest.ContestEvaluation;
 import src.genetics.Individual;
-import src.genetics.Population;
-import src.genetics.components.mutation.MutationGaussian;
+import src.genetics.GA.mutation.MutationGaussian;
 
 import java.util.ArrayList;
 import java.util.Random;

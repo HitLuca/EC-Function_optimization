@@ -1,4 +1,4 @@
-package src.genetics.components.crossover;
+package src.genetics.GA.crossover;
 
 import src.genetics.Individual;
 
@@ -7,22 +7,20 @@ import java.util.Random;
 
 import static src.genetics.Population.BASE_GENOME_SIZE;
 
-public class CrossoverAverage extends ACrossover {
-
-    public CrossoverAverage(Random rng) {
+public class CrossoverCoinFlip extends ACrossover {
+    public CrossoverCoinFlip(Random rng) {
         super(rng);
     }
 
     @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> parents) {
         ArrayList<Individual> children = new ArrayList<>();
+
         double[] childGenome = new double[BASE_GENOME_SIZE];
 
         for (int i = 0; i < BASE_GENOME_SIZE; i++) {
-            childGenome[i] = 0.0;
-            for (int j = 0; j < parents.size(); j++) {
-                childGenome[i] += parents.get(j).getGenome()[i] / parents.size();
-            }
+            int j = (int) rng.nextFloat() * parents.size();
+            childGenome[i] = parents.get(j).getGenome()[i];
         }
 
         children.add(new Individual(childGenome));

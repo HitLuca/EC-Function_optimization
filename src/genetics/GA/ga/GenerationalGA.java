@@ -1,16 +1,15 @@
-package src.genetics.components.ga;
+package src.genetics.GA.ga;
 
 import org.vu.contest.ContestEvaluation;
+import src.genetics.GA.crossover.ACrossover;
 import src.genetics.Individual;
 import src.genetics.Population;
-import src.genetics.components.Stagnancy;
-import src.genetics.components.crossover.ACrossover;
-import src.genetics.components.mutation.AMutation;
-import src.genetics.components.mutation.MutationGaussian;
-import src.genetics.components.selection.ASelection;
-import src.genetics.components.survival.ASurvival;
+import src.genetics.GA.Stagnancy;
+import src.genetics.GA.mutation.AMutation;
+import src.genetics.GA.mutation.MutationGaussian;
+import src.genetics.GA.selection.ASelection;
+import src.genetics.GA.survival.ASurvival;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,13 +18,16 @@ public class GenerationalGA extends AGA {
     private int elitism;
     private Stagnancy stagnancy;
 
-    public GenerationalGA(Random rng, int populationSize, Stagnancy stagnancy, ASelection selection, ACrossover crossover, AMutation mutation, ASurvival survival, ContestEvaluation evaluation, int epochs, int elitism) {
-        super(rng, populationSize, stagnancy, selection, crossover, mutation, survival, evaluation, epochs);
+    public GenerationalGA(Random rng, int populationSize, Stagnancy stagnancy, ASelection selection,
+                          ACrossover crossover, AMutation mutation, ASurvival survival,
+                          ContestEvaluation evaluation, int epochs, int elitism, boolean printOutput) {
+        super(rng, populationSize, stagnancy, selection, crossover, mutation, survival,
+                evaluation, epochs, printOutput);
         this.elitism = elitism;
         this.stagnancy = stagnancy;
     }
 
-    public void run() throws IOException {
+    public void run() {
         int epoch;
         if (printing) {
             System.out.println("Scores:");
@@ -51,9 +53,9 @@ public class GenerationalGA extends AGA {
                 }
 
                 if(population.getStagnancyLevel() == 0) {
-                    ((MutationGaussian)mutation).increaseMutation();
+                    MutationGaussian.increaseMutation();
                 } else if(population.getStagnancyLevel() > 10){
-                    ((MutationGaussian)mutation).decreaseMutation();
+                    MutationGaussian.decreaseMutation();
                 }
             }
         } catch (Exception e) {
@@ -65,5 +67,12 @@ public class GenerationalGA extends AGA {
         if (printing) {
             System.out.println("EndScores\n");
         }
+    }
+
+    @Override
+    public void printAlgorithmParameters() {
+        System.out.println("Properties:");
+        System.out.println("algorithmType = " + this.toString());
+        System.out.println("EndProperties\n");
     }
 }

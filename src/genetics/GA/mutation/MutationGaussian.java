@@ -1,4 +1,4 @@
-package src.genetics.components.mutation;
+package src.genetics.GA.mutation;
 
 import src.genetics.Individual;
 import src.genetics.Population;

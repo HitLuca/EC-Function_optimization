@@ -1,4 +1,4 @@
-package src.genetics.components.survival;
+package src.genetics.GA.survival;
 
 import src.genetics.Individual;
 import src.genetics.Population;

@@ -1,11 +1,9 @@
 package src.genetics;
 
 import org.vu.contest.ContestEvaluation;
-import src.genetics.components.FitnessSharing;
-import src.genetics.components.Stagnancy;
+import src.genetics.GA.FitnessSharing;
+import src.genetics.GA.Stagnancy;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 

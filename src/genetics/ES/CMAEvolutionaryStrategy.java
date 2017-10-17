@@ -1,14 +1,16 @@
-package src.genetics;
+package src.genetics.ES;
 
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.linear.*;
 import org.apache.commons.math3.special.Gamma;
 import org.vu.contest.ContestEvaluation;
+import src.genetics.AEA;
+import src.genetics.Individual;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CMAEvolutionaryStrategy {
+public class CMAEvolutionaryStrategy extends AEA {
     // region parameters
     private final int N = 10;
 
@@ -53,11 +55,16 @@ public class CMAEvolutionaryStrategy {
 
     // print flag
     private boolean printOutput;
+
+    private int epochs;
+    private ContestEvaluation evaluation;
     // endregion
 
-    public CMAEvolutionaryStrategy(int mu, int lambda, boolean printOutput) {
+    public CMAEvolutionaryStrategy(int mu, int lambda, ContestEvaluation evaluation, int epochs, boolean printOutput) {
         this.lambda = lambda;
         this.mu = mu;
+        this.evaluation = evaluation;
+        this.epochs = epochs;
         this.printOutput = printOutput;
 
         initParameters();
@@ -95,7 +102,7 @@ public class CMAEvolutionaryStrategy {
         stagnancyCounter = 0;
     }
 
-    public void run(ContestEvaluation evaluation, int epochs) {
+    public void run() {
         m_old = m.copy();
 
         for(int ep = 0; ep < epochs || epochs < 0; ep++) {
@@ -162,6 +169,13 @@ public class CMAEvolutionaryStrategy {
                 return;
             }
         }
+    }
+
+    @Override
+    public void printAlgorithmParameters() {
+        System.out.println("Properties:");
+        System.out.println("algorithmType = " + this.toString());
+        System.out.println("EndProperties\n");
     }
 
     private ArrayList<Individual> sample(ContestEvaluation evaluation) {

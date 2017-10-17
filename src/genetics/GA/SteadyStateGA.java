@@ -1,12 +1,12 @@
 package src.genetics.GA;
 
 import org.vu.contest.ContestEvaluation;
-import src.genetics.GA.other.Stagnancy;
 import src.genetics.GA.crossover.ACrossover;
 import src.genetics.GA.mutation.AMutation;
+import src.genetics.GA.mutation.MutationGaussian;
 import src.genetics.GA.other.AGA;
 import src.genetics.GA.other.Individual;
-import src.genetics.GA.mutation.MutationGaussian;
+import src.genetics.GA.other.Stagnancy;
 import src.genetics.GA.selection.ASelection;
 import src.genetics.GA.survival.ASurvival;
 
@@ -48,9 +48,9 @@ public class SteadyStateGA extends AGA {
                     System.out.println(epoch + ", " + population.getStatistics());
                 }
 
-                if(population.getStagnancyLevel() == 0) {
+                if (population.getStagnancyLevel() == 0) {
                     MutationGaussian.increaseMutation();
-                } else if(population.getStagnancyLevel() > 20){
+                } else if (population.getStagnancyLevel() > 20) {
                     MutationGaussian.decreaseMutation();
                 }
             }

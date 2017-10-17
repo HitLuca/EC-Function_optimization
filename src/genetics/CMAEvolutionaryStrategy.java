@@ -72,12 +72,12 @@ public class CMAEvolutionaryStrategy extends AEA {
 
     private void initParameters() {
         //Initialize parameters with the recommended values
-        mu_w = 0.3*lambda;
-        c_c = 4.0/ N;
-        c_sigma = 4.0/ N;
-        c_1 = 2.0/(N * N);
-        c_mu = mu_w/(N * N);
-        d_sigma = 1 + Math.sqrt(mu_w / (double)N);
+        mu_w = 0.3 * lambda;
+        c_c = 4.0 / N;
+        c_sigma = 4.0 / N;
+        c_1 = 2.0 / (N * N);
+        c_mu = mu_w / (N * N);
+        d_sigma = 1 + Math.sqrt(mu_w / (double) N);
 
         // calculate expectation
         expectation = Math.sqrt(2) * Gamma.gamma((N + 1) / 2.0) / Gamma.gamma(N / 2.0);
@@ -87,7 +87,7 @@ public class CMAEvolutionaryStrategy extends AEA {
         C = MatrixUtils.createRealIdentityMatrix(N);
 
         //Initialize weights uniformly
-        weights = zerosVector(mu).mapAdd(1.0/mu);
+        weights = zerosVector(mu).mapAdd(1.0 / mu);
 
         p_c = zerosVector(N);
         p_sigma = zerosVector(N);
@@ -104,7 +104,7 @@ public class CMAEvolutionaryStrategy extends AEA {
     public void run() {
         m_old = m.copy();
 
-        for(int ep = 0; ep < epochs || epochs < 0; ep++) {
+        for (int ep = 0; ep < epochs || epochs < 0; ep++) {
             // sample and evaluate
             List<CMAIndividual> xs = sample(evaluation);
             CMAIndividual parent = new CMAIndividual(m_old.toArray(), evaluation);
@@ -115,14 +115,14 @@ public class CMAEvolutionaryStrategy extends AEA {
             double best = xs.get(0).getFitness();
 
             // check best fitness
-            if(best > algorithmBest) {
+            if (best > algorithmBest) {
                 algorithmBest = best;
             }
 
             // check stagnancy
             if (useFixedSigma && (best - best_old) < stagnancyStep) {
-                stagnancyCounter ++;
-                if(stagnancyCounter > stagnancyLimit) {
+                stagnancyCounter++;
+                if (stagnancyCounter > stagnancyLimit) {
                     resetParameters();
                     continue;
                 }
@@ -164,7 +164,7 @@ public class CMAEvolutionaryStrategy extends AEA {
                 resetParameters();
             }
 
-            if(algorithmBest > stoppingThreshold) {
+            if (algorithmBest > stoppingThreshold) {
                 return;
             }
         }
@@ -193,7 +193,7 @@ public class CMAEvolutionaryStrategy extends AEA {
     private RealVector weightVectors(List<RealVector> ys) {
         RealVector weighted = zerosVector(N);
 
-        for (int i=0; i<mu; i++) {
+        for (int i = 0; i < mu; i++) {
             double weight = weights.getEntry(i);
             weighted = weighted.add(ys.get(i).mapMultiply(weight));
         }
@@ -204,7 +204,7 @@ public class CMAEvolutionaryStrategy extends AEA {
     private RealMatrix weightMatrices(ArrayList<RealMatrix> ms) {
         RealMatrix weighted = zerosMatrix(N);
 
-        for (int i=0; i<mu; i++) {
+        for (int i = 0; i < mu; i++) {
             double weight = weights.getEntry(i);
             weighted = weighted.add(ms.get(i).scalarMultiply(weight));
 
@@ -214,8 +214,8 @@ public class CMAEvolutionaryStrategy extends AEA {
 
     private RealVector zerosVector(int dim) {
         double[] vArray = new double[dim];
-        for(int i=0; i<dim; i++)
-            vArray[i]=0;
+        for (int i = 0; i < dim; i++)
+            vArray[i] = 0;
 
         return new ArrayRealVector(vArray);
     }
@@ -227,7 +227,7 @@ public class CMAEvolutionaryStrategy extends AEA {
 
     private RealMatrix inverseSquareRootC() {
         EigenDecomposition e = new EigenDecomposition(C);
-        if(!e.getSolver().isNonSingular()) {
+        if (!e.getSolver().isNonSingular()) {
             DiagonalMatrix error_C = new DiagonalMatrix(zerosVector(N).mapAdd(1e-6).toArray());
             C = C.add(error_C);
             e = new EigenDecomposition(C);
@@ -267,7 +267,7 @@ public class CMAEvolutionaryStrategy extends AEA {
     }
 
     private void update_sigma() {
-        if(!useFixedSigma) {
+        if (!useFixedSigma) {
             sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
         }
     }
@@ -278,9 +278,9 @@ public class CMAEvolutionaryStrategy extends AEA {
 
     private void resetParameters() {
         resetVariables();
-        selected_sigma_index ++;
+        selected_sigma_index++;
         selected_sigma_index = selected_sigma_index % sigmas.length;
-        if(selected_sigma_index == 0) {
+        if (selected_sigma_index == 0) {
             stagnancyLimit += 5;
         }
     }

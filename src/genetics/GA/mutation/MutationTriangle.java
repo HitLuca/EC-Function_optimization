@@ -1,10 +1,11 @@
 package src.genetics.GA.mutation;
 
 import src.genetics.GA.other.Individual;
-import src.genetics.GA.other.Population;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import static src.genetics.GA.other.Population.GENOME_SIZE;
 
 public class MutationTriangle extends AMutation {
 
@@ -20,7 +21,7 @@ public class MutationTriangle extends AMutation {
         for (Individual individual : individuals) {
             if (rng.nextDouble() < mutationProbability) {
                 double[] genome = individual.getGenome();
-                for (int i = 0; i < Population.BASE_GENOME_SIZE; i++) {
+                for (int i = 0; i < GENOME_SIZE; i++) {
                     genome[i] += ((rng.nextDouble() + rng.nextDouble()) * max) - max;
                 }
                 genome = clipToLimits(genome);

@@ -19,7 +19,7 @@ public class SelectionTournament extends ASelection {
         ArrayList<Individual> selectedIndividuals = new ArrayList<>();
 
         ArrayList<Individual> tournament = new ArrayList<>();
-        for(int k=0; k<tournamentSize; k++) {
+        for (int k = 0; k < tournamentSize; k++) {
             tournament.add(population.getIndividuals().get(rng.nextInt(population.getCurrentSize())));
         }
         tournament.sort(new Individual.FitnessComparator().reversed());

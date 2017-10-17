@@ -66,6 +66,10 @@ public class Individual {
                 '}';
     }
 
+    public int hashCode() {
+        return Double.hashCode(fitness);
+    }
+
     static public class FitnessComparator implements Comparator<Individual> {
         // Used for sorting in ascending order
         public int compare(Individual a, Individual b) {
@@ -76,9 +80,5 @@ public class Individual {
             else
                 return -1;
         }
-    }
-
-    public int hashCode() {
-        return Double.hashCode(fitness);
     }
 }

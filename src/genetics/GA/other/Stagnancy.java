@@ -30,7 +30,7 @@ public class Stagnancy {
     }
 
     public ArrayList<Individual> checkStagnancy(double oldBest, double newBest, ContestEvaluation evaluation, ArrayList<Individual> population) {
-        if(stagnancyThreshold > 0) {
+        if (stagnancyThreshold > 0) {
             if (newBest > oldBest) {
                 stagnancyLevel = 0;
                 wipeoutLevel = 0;

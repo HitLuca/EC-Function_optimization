@@ -6,6 +6,8 @@ import src.genetics.GA.other.Population;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static src.genetics.GA.other.Population.GENOME_SIZE;
+
 public class SelectionTribalism extends ASelection {
     private boolean windowing;
     private double tribeWeight;
@@ -91,7 +93,7 @@ public class SelectionTribalism extends ASelection {
 
     private double parentsDistance(Individual ind1, Individual ind2) {
         double distance = 0.0;
-        for (int i = 0; i < Population.BASE_GENOME_SIZE; i++) {
+        for (int i = 0; i < GENOME_SIZE; i++) {
             distance += Math.pow(ind1.getGenome()[i] - ind2.getGenome()[i], 2);
         }
         return Math.sqrt(distance);

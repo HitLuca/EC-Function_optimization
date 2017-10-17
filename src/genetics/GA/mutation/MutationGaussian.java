@@ -1,7 +1,6 @@
 package src.genetics.GA.mutation;
 
 import src.genetics.GA.other.Individual;
-import src.genetics.GA.other.Population;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,6 +16,22 @@ public class MutationGaussian extends AMutation {
         this.sigma = sigma;
     }
 
+    public static void increaseMutation() {
+        if (sigma < 0.1) {
+            sigma += sigma * 0.01;
+        }
+    }
+
+    public static void decreaseMutation() {
+        if (sigma > 0.001) {
+            sigma -= sigma * 0.01;
+        }
+    }
+
+    public static void resetMutation() {
+        sigma = 0.05;
+    }
+
     public void mutate(ArrayList<Individual> individuals) {
         for (Individual individual : individuals) {
             if (rng.nextDouble() < mutationProbability) {
@@ -30,21 +45,6 @@ public class MutationGaussian extends AMutation {
         }
     }
 
-    public static void increaseMutation() {
-        if(sigma < 0.1) {
-            sigma += sigma * 0.01;
-        }
-    }
-
-    public static void decreaseMutation() {
-        if(sigma > 0.001) {
-            sigma -= sigma * 0.01;
-        }
-    }
-
-    public static void resetMutation() {
-        sigma = 0.05;
-    }
     public double getSigma() {
         return sigma;
     }

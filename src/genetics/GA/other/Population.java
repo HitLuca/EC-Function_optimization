@@ -80,7 +80,7 @@ public class Population {
         for (Individual individual : population) {
             variance += Math.pow(individual.getFitness() - meanFitness, 2);
         }
-        variance /= (population.size()-1);
+        variance /= (population.size() - 1);
     }
 
     public void addIndividuals(ArrayList<Individual> individuals) {
@@ -109,7 +109,7 @@ public class Population {
     }
 
     public void calculateSharedFitness() {
-        for(Individual ind: population) {
+        for (Individual ind : population) {
             ind.setFitness(FitnessSharing.calculateSharedFitness(ind, population));
         }
         updateStatistics();
@@ -154,6 +154,7 @@ public class Population {
     public int hashCode() {
         return population.hashCode();
     }
+
     public ArrayList<Individual> getIndividuals() {
         return population;
     }

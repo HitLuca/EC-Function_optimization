@@ -21,7 +21,7 @@ public class SelectionLinearRanking extends ASelection {
         int popHash = population.hashCode();
         ArrayList<Individual> selectedIndividuals = new ArrayList<>();
 
-        if(popHash != populationHashCode) {
+        if (popHash != populationHashCode) {
             population.sortIndividuals();
 
             totalWeight = 0;

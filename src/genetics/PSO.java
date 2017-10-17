@@ -2,11 +2,10 @@ package src.genetics;
 
 import org.vu.contest.ContestEvaluation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class PSO extends AEA{
+public class PSO extends AEA {
     private int epochs;
     private int popSize;
 
@@ -20,7 +19,7 @@ public class PSO extends AEA{
     private ContestEvaluation evaluation;
 
     public PSO(int popSize, int epochs, double w, double phi1, double phi2, Random rng,
-               ContestEvaluation evaluation){
+               ContestEvaluation evaluation) {
         this.popSize = popSize;
 
         if (epochs == -1) {
@@ -111,7 +110,7 @@ class Swarm {
 
         meanFitness /= popSize;
 
-        if ( (bestFitness - worstFitness)/bestFitness < 0.01){
+        if ((bestFitness - worstFitness) / bestFitness < 0.01) {
             epuration();
         }
     }
@@ -123,11 +122,11 @@ class Swarm {
                 + ", " + historicalBestFitness;
     }
 
-    public void epuration(){
+    public void epuration() {
         population = new ArrayList<>();
         population.add(new Particle(historicalBest, historicalBestFitness));
 
-        while(population.size() < popSize) {
+        while (population.size() < popSize) {
             population.add(new Particle(evaluation, rng));
         }
     }
@@ -199,7 +198,7 @@ class Particle {
         }
     }
 
-    public double clip(double value){
+    public double clip(double value) {
         if (value < min) return min;
         else if (value > max) return max;
         else return value;

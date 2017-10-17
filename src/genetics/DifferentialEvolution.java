@@ -2,8 +2,10 @@ package src.genetics;
 
 import org.vu.contest.ContestEvaluation;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 public class DifferentialEvolution extends AEA {
     private int epochs;
@@ -111,7 +113,7 @@ class DiffPopulation {
 
         if (base == 'b') parents.add(bestIndividual);
 
-        while (parents.size() < 1 + diffN*2) {
+        while (parents.size() < 1 + diffN * 2) {
             i = rng.nextInt(popSize);
             if (i != index) parents.add(population.get(i));
         }
@@ -120,18 +122,18 @@ class DiffPopulation {
         return parentsArray;
     }
 
-    private double[] combine(DiffIndividual x, ArrayList<DiffIndividual> parents, double f, double cr){
+    private double[] combine(DiffIndividual x, ArrayList<DiffIndividual> parents, double f, double cr) {
         double[] y = x.getGenome().clone();
 
         double[] a = parents.get(0).getGenome();
         double d = 0.0;
 
         for (int i = 0; i < GENOME_SIZE; i++) {
-            if(rng.nextDouble()<cr) {
+            if (rng.nextDouble() < cr) {
                 for (int j = 1; j < parents.size(); j++) {
                     d += parents.get(j).getGenome()[i] * Math.pow(-1, j);
                 }
-                y[i] =  a[i] + f*(d);
+                y[i] = a[i] + f * (d);
             }
         }
         return y;
@@ -161,7 +163,7 @@ class DiffPopulation {
         for (DiffIndividual individual : population) {
             variance += Math.pow(individual.getFitness() - meanFitness, 2);
         }
-        variance /= (population.size()-1);
+        variance /= (population.size() - 1);
     }
 
     public String getStatistics() {
@@ -194,12 +196,15 @@ class DiffIndividual {
         evaluate(evaluation);
     }
 
-    public double[] getGenome(){ return genome;}
+    public double[] getGenome() {
+        return genome;
+    }
+
     public double getFitness() {
         return fitness;
     }
 
-    private double[] clip(double[] g){
+    private double[] clip(double[] g) {
         for (int i = 0; i < g.length; i++) {
             if (g[i] < min) g[i] = min;
             else if (g[i] > max) g[i] = max;

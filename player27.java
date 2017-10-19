@@ -3,9 +3,8 @@ import org.vu.contest.ContestSubmission;
 import src.genetics.AEA;
 import src.genetics.CMAEvolutionaryStrategy;
 import src.genetics.DifferentialEvolution;
+import src.genetics.GA.crossover.*;
 import src.genetics.GA.other.Stagnancy;
-import src.genetics.GA.crossover.ACrossover;
-import src.genetics.GA.crossover.CrossoverAverageWeighted;
 import src.genetics.GA.GenerationalGA;
 import src.genetics.GA.SteadyStateGA;
 import src.genetics.GA.mutation.AMutation;
@@ -28,7 +27,7 @@ public class player27 implements ContestSubmission {
     private int stagnancyThreshold;
     private int wipeoutThreshold;
     private double epurationDegree;
-    private int epochs;
+    private int epochs = -1;
 
     private double mutationSigma = 0.05;
     private double mutationProbability = 1;
@@ -79,7 +78,9 @@ public class player27 implements ContestSubmission {
             ea.printAlgorithmParameters();
         }
 
-        ea.run();
+        try {
+            ea.run();
+        } catch (Exception e) {}
     }
 
     private void printProperties(ContestEvaluation evaluation) {
@@ -94,20 +95,15 @@ public class player27 implements ContestSubmission {
     }
 
     private void setupAlgorithm() {
-        epochs = -1;
-
-        String algorithmType = "CMA-ES";
-//        String algorithmType = "Generational";
-//        String algorithmType = "SteadyState";
-//        String algorithmType = "PSO";
-//        String algorithmType = "DE";
+        String algorithmType = System.getProperty("algorithm");
+        algorithmType = algorithmType == null ? "CMA-ES" : algorithmType;
 
         switch (algorithmType) {
-            case "Generational": {
+            case "GGA": {
                 setupGGA();
                 break;
             }
-            case "SteadyState": {
+            case "SSGA": {
                 setupSSGA();
                 break;
             }
@@ -144,12 +140,16 @@ public class player27 implements ContestSubmission {
         int replacementNumber = populationSize / 10;
         selectionPressure = 1.75;
 
-        stagnancyThreshold = evaluations_limit_ / 4000;
+        stagnancyThreshold = 0;
+        if (isMultimodal) {
+            stagnancyThreshold = evaluations_limit_ / 4000;
+        }
         wipeoutThreshold = evaluations_limit_ / 2000;
         epurationDegree = 0.7;
 
         Stagnancy stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
-        ACrossover crossover = new CrossoverAverageWeighted(rng);
+        ACrossover crossover = chooseCrossover();
+
         AMutation mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
         ASelection selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
         ASurvival survival = new SurvivalBestFitness(rng);
@@ -177,7 +177,7 @@ public class player27 implements ContestSubmission {
         epurationDegree = 0;
 
         Stagnancy stagnancy = new Stagnancy(rng, stagnancyThreshold, wipeoutThreshold, epurationDegree, populationSize);
-        ACrossover crossover = new CrossoverAverageWeighted(rng);
+        ACrossover crossover = chooseCrossover();
         AMutation mutation = new MutationGaussian(rng, mutationSigma, mutationProbability);
         ASelection selection = new SelectionLinearRanking(rng, parentsNumber, selectionPressure);
         ASurvival survival = new SurvivalBestFitness(rng);
@@ -201,7 +201,7 @@ public class player27 implements ContestSubmission {
         double phi1 = 0.07;
         double phi2 = 0.07;
 
-        ea = new PSO(swarmSize, epochs, w, phi1, phi2, rng, evaluation_);
+        ea = new PSO(swarmSize, epochs, w, phi1, phi2, rng, evaluation_, printOutput);
     }
 
     private void setupDE() {
@@ -211,6 +211,35 @@ public class player27 implements ContestSubmission {
         char base = 'b';
         int diffN = 1;
 
-        ea = new DifferentialEvolution(epochs, difPopulationSize, f, cr, base, diffN, rng, evaluation_);
+        ea = new DifferentialEvolution(epochs, difPopulationSize, f, cr, base, diffN, rng, evaluation_, printOutput);
+    }
+
+    private ACrossover chooseCrossover() {
+        String crossoverType = System.getProperty("crossover");
+        if(crossoverType == null) {
+            return new CrossoverAverageWeighted(rng);
+        } else {
+            switch (System.getProperty("crossover")) {
+                case "0": {
+                    return new CrossoverAverage(rng);
+                }
+                case "1": {
+                    return new CrossoverAverageWeighted(rng);
+                }
+                case "2": {
+                    return new CrossoverCoinFlip(rng);
+                }
+                case "3": {
+                    return new CrossoverCoinFlipWeighted(rng);
+                }
+                case "4": {
+                    return new CrossoverNPoints(rng, 2);
+                }
+                default: {
+                    System.out.println("unrecognized crossover, using AverageWeighted");
+                    return new CrossoverAverageWeighted(rng);
+                }
+            }
+        }
     }
 }

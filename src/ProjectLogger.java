@@ -6,97 +6,92 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ProjectLogger {
-    private static BufferedWriter logger;
+    private static Runtime run;
+    private static String[] functions = new String[]{
+            "BentCigarFunction",
+            "SchaffersEvaluation",
+            "KatsuuraEvaluation"};
+
+    private static String[] algorithms = new String[] {
+            "SSGA",
+            "GGA",
+            "PSO",
+            "DE",
+            "CMA-ES"};
+    private static Process pr;
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        Runtime run = Runtime.getRuntime();
+        run = Runtime.getRuntime();
+        pr = run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
+        pr.waitFor();
 
-//        String function = "BentCigarFunction";
-        String function = "SchaffersEvaluation";
-//        String function = "KatsuuraEvaluation";
-
-        int runsNumber = 3;
-
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-
-        String outputPath = "logs/" + dateFormat.format(date) + "_" + function + "/";
-        new File(outputPath).mkdir();
-
-//        deleteLastRunFile();
-
-        FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
-        logger = new BufferedWriter(fileWriter);
-
-        for (int i = 0; i < runsNumber; i++) {
-            Process pr = run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
-            pr.waitFor();
-
-            pr = run.exec("java -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
-//            pr.waitFor();
-
-            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            String line;
-
-            while ((line = buf.readLine()) != null) {
-                System.out.println(line);
-                logger.write(line + "\n");
-            }
-
-//            File source = new File(outputPath + filename);
-//            File destination = new File("logs/" + "last_run.log");
-//
-////            copyFile(source,destination);
-//            appendFile(source, destination);
-        }
-        logger.close();
-
-
+//        logCrossoverResults();
+        logAlgorithmResults();
     }
 
-    public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!destFile.exists()) {
-            destFile.createNewFile();
-        }
+    private static void logCrossoverResults() throws IOException {
+        String outputDir = "logs/crossoverTests/";
+        int runsNumber = 6;
 
-        FileChannel source = null;
-        FileChannel destination = null;
-        try {
-            source = new RandomAccessFile(sourceFile, "rw").getChannel();
-            destination = new RandomAccessFile(destFile, "rw").getChannel();
+        for(int crossover = 0; crossover < 5; crossover ++) {
+            for (String function : functions) {
+                System.out.println("Function: " + function);
 
-            long position = 0;
-            long count = source.size();
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-            source.transferTo(position, count, destination);
-        } finally {
-            if (source != null) {
-                source.close();
-            }
-            if (destination != null) {
-                destination.close();
+                String outputPath = outputDir + dateFormat.format(date) + "_" + function + "/";
+                new File(outputPath).mkdir();
+
+                FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
+                BufferedWriter logger = new BufferedWriter(fileWriter);
+
+                for (int i = 0; i < runsNumber; i++) {
+                    pr = run.exec("java -Dcrossover=" + crossover + " -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
+
+                    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                    String line;
+
+                    while ((line = buf.readLine()) != null) {
+                        System.out.println(line);
+                        logger.write(line + "\n");
+                    }
+                }
+                logger.close();
             }
         }
     }
 
-    private static void appendFile(File sourceFile, File destFile) throws IOException {
-        try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(destFile, true));
-            BufferedReader in = new BufferedReader(new FileReader(sourceFile));
-            String str;
-            while ((str = in.readLine()) != null) {
-                out.write(str + '\n');
-            }
-            in.close();
-            out.close();
-        } catch (IOException e) {
-        }
-    }
+    private static void logAlgorithmResults() throws IOException {
+        String outputDir = "logs/results/";
 
-    private static void deleteLastRunFile() {
-        File lastRun = new File("logs/" + "last_run.log");
-        if (lastRun.exists()) {
-            lastRun.delete();
+        int runsNumber = 10;
+
+        for(String algorithm:algorithms) {
+            System.out.println("Algorithm: " + algorithm);
+            for (String function : functions) {
+                System.out.println("Function: " + function);
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+                String outputPath = outputDir + dateFormat.format(date) + "_" + algorithm + "_" + function + "/";
+                new File(outputPath).mkdir();
+
+                FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
+                BufferedWriter logger = new BufferedWriter(fileWriter);
+
+                for (int i = 0; i < runsNumber; i++) {
+                    pr = run.exec("java -Dalgorithm=" + algorithm + " -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
+
+                    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                    String line;
+
+                    while ((line = buf.readLine()) != null) {
+                        System.out.println(line);
+                        logger.write(line + "\n");
+                    }
+                }
+                logger.close();
+            }
         }
     }
 }

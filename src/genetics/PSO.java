@@ -18,8 +18,10 @@ public class PSO extends AEA {
     private Random rng;
     private ContestEvaluation evaluation;
 
+    private boolean printOutput;
+
     public PSO(int popSize, int epochs, double w, double phi1, double phi2, Random rng,
-               ContestEvaluation evaluation) {
+               ContestEvaluation evaluation, boolean printOutput) {
         this.popSize = popSize;
 
         if (epochs == -1) {
@@ -34,22 +36,24 @@ public class PSO extends AEA {
         this.rng = rng;
 
         this.evaluation = evaluation;
+        this.printOutput = printOutput;
     }
 
     @Override
     public void run() {
         population = new Swarm(popSize, evaluation, rng);
-        System.out.println("Scores:");
+        if(printOutput) System.out.println("Scores:");
+
         try {
             for (int epoch = 0; epoch < epochs; epoch++) {
                 population.updateSwarm(w, phi1, phi2);
-                System.out.println(epoch + ", " + population.getStatistics());
+                if(printOutput) System.out.println(epoch + ", " + population.getStatistics());
             }
         } catch (Exception e) {
-            System.out.println("EndScores\n");
+            if(printOutput) System.out.println("EndScores\n");
             throw e;
         }
-        System.out.println("EndScores\n");
+        if(printOutput) System.out.println("EndScores\n");
     }
 
     @Override

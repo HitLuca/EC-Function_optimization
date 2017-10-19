@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 mv ./testrun/EC-Project.jar ./testrun/submission.jar
-zip -d ./testrun/submission.jar PythonPlotter.ipynb
+zip -d ./testrun/submission.jar results_plotter.ipynb
 
 echo Bent Cigar Function
 java -jar ./testrun/testrun.jar -submission=player27 -evaluation=BentCigarFunction -seed=1

@@ -20,9 +20,10 @@ public class DifferentialEvolution extends AEA {
 
     private Random rng;
     private ContestEvaluation evaluation;
+    private boolean printOutput;
 
     public DifferentialEvolution(int epochs, int popSize, double f, double cr, char base,
-                                 int diffN, Random rng, ContestEvaluation evaluation) {
+                                 int diffN, Random rng, ContestEvaluation evaluation, boolean printOutput) {
         this.popSize = popSize;
         this.f = f;
         this.cr = cr;
@@ -30,6 +31,7 @@ public class DifferentialEvolution extends AEA {
         this.diffN = diffN;
         this.rng = rng;
         this.evaluation = evaluation;
+        this.printOutput = printOutput;
 
         if (epochs == -1) {
             this.epochs = Integer.MAX_VALUE;
@@ -42,18 +44,17 @@ public class DifferentialEvolution extends AEA {
     @Override
     public void run() {
         population = new DiffPopulation(evaluation, popSize, rng);
-        System.out.println("Scores:");
+        if(printOutput) System.out.println("Scores:");
         try {
-            System.out.println("HI");
             for (int epoch = 0; epoch < epochs; epoch++) {
                 population.update(f, cr, base, diffN);
-                System.out.println(epoch + ", " + population.getStatistics());
+                if(printOutput) System.out.println(epoch + ", " + population.getStatistics());
             }
         } catch (Exception e) {
-            System.out.println("EndScores\n");
+            if(printOutput) System.out.println("EndScores\n");
             throw e;
         }
-        System.out.println("EndScores\n");
+        if (printOutput) System.out.println("EndScores\n");
     }
 
     @Override

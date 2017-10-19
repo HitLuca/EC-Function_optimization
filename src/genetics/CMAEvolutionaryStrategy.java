@@ -44,8 +44,6 @@ public class CMAEvolutionaryStrategy extends AEA {
     private double sigma_threshold_high = 3;
     private double sigma_threshold_low = 1e-5;
 
-    private boolean useFixedSigma = false;
-
     // run parameters
     private double best_old = 0;
     private double algorithmBest;
@@ -166,11 +164,6 @@ public class CMAEvolutionaryStrategy extends AEA {
             if (sigma < sigma_threshold_low)
                 sigma = sigma_threshold_low;
 
-//            if (sigma > sigma_threshold_high || sigma < sigma_threshold_low) {
-//                useFixedSigma = true;
-//                resetParameters();
-//            }
-
             if (algorithmBest >= stoppingThreshold) {
                 return;
             }
@@ -274,9 +267,8 @@ public class CMAEvolutionaryStrategy extends AEA {
     }
 
     private void update_sigma() {
-        if (!useFixedSigma) {
-            sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
-        }
+        sigma *= Math.exp((c_sigma / d_sigma) * ((p_sigma.getNorm() / expectation) - 1));
+
     }
 
     private void update_m(RealVector yw) {

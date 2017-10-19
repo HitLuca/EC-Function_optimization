@@ -1,6 +1,7 @@
 package src.genetics;
 
-public abstract class AEA {
+
+public abstract class AEA implements Runnable {
     public abstract void run();
 
     public abstract void printAlgorithmParameters();

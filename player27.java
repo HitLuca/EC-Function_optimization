@@ -131,7 +131,7 @@ public class player27 implements ContestSubmission {
     }
 
     private void setupCMAES() {
-        ea = new CMAEvolutionaryStrategy(5, 15, evaluation_, epochs, printOutput);
+        ea = new CMAEvolutionaryStrategy(10, 30, evaluation_, epochs, printOutput);
     }
 
     private void setupSSGA() {

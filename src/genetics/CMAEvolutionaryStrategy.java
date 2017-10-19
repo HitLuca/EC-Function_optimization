@@ -37,14 +37,14 @@ public class CMAEvolutionaryStrategy extends AEA {
     // sigma parameters
     private double stagnancyStep = 1e-15;
     private int stagnancyLimit = 10;
-    private double stoppingThreshold = 10.0 - 1e-4;
+    private double stoppingThreshold = 10.0;// - 1e-4;
 
     private double[] sigmas = new double[]{0.5, 0.3, 0.4, 0.1, 0.6};
     private int selected_sigma_index = 0;
     private double sigma_threshold_high = 3;
     private double sigma_threshold_low = 1e-5;
 
-    private boolean useFixedSigma = true;
+    private boolean useFixedSigma = false;
 
     // run parameters
     private double best_old = 0;
@@ -95,6 +95,7 @@ public class CMAEvolutionaryStrategy extends AEA {
         //Initial distribution params
         m = zerosVector(N);
         sigma = sigmas[selected_sigma_index];
+        sigma_threshold_low = sigma;
 
         m_old = zerosVector(N);
         best_old = 0;
@@ -120,7 +121,7 @@ public class CMAEvolutionaryStrategy extends AEA {
             }
 
             // check stagnancy
-            if (useFixedSigma && (best - best_old) < stagnancyStep) {
+            if ( (best - best_old) < stagnancyStep) {
                 stagnancyCounter++;
                 if (stagnancyCounter > stagnancyLimit) {
                     resetParameters();
@@ -159,12 +160,18 @@ public class CMAEvolutionaryStrategy extends AEA {
             }
 
             // check sigma against thresholds
-            if (sigma > sigma_threshold_high || sigma < sigma_threshold_low) {
-                useFixedSigma = true;
-                resetParameters();
-            }
+            if (sigma > sigma_threshold_high)
+                sigma = sigma_threshold_high;
 
-            if (algorithmBest > stoppingThreshold) {
+            if (sigma < sigma_threshold_low)
+                sigma = sigma_threshold_low;
+
+//            if (sigma > sigma_threshold_high || sigma < sigma_threshold_low) {
+//                useFixedSigma = true;
+//                resetParameters();
+//            }
+
+            if (algorithmBest >= stoppingThreshold) {
                 return;
             }
         }

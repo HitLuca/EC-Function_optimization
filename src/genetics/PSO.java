@@ -148,6 +148,9 @@ class Particle {
     private int max = 5;
     private int min = -5;
 
+    private double minV = -1;
+    private double maxV = 1;
+
     public Particle(ContestEvaluation evaluation, Random rng) {
         genome = new double[Swarm.GENOME_SIZE];
         velocity = new double[Swarm.GENOME_SIZE];
@@ -199,7 +202,14 @@ class Particle {
     public void updateVelocity(double[] globalBest, double w, double phi1, double phi2, Random rng) {
         for (int i = 0; i < Swarm.GENOME_SIZE; i++) {
             velocity[i] = w * velocity[i] + phi1 * rng.nextDouble() * (historicalBest[i] - genome[i]) + phi2 * rng.nextDouble() * (globalBest[i] - genome[i]);
+            velocity[i] = velocity_clip(velocity[i]);
         }
+    }
+
+    public double velocity_clip(double value) {
+        if (value < minV) return minV;
+        else if (value > maxV) return maxV;
+        else return value;
     }
 
     public double clip(double value) {
@@ -207,5 +217,4 @@ class Particle {
         else if (value > max) return max;
         else return value;
     }
-
 }

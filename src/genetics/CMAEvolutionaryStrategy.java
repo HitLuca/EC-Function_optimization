@@ -37,7 +37,7 @@ public class CMAEvolutionaryStrategy extends AEA {
     // sigma parameters
     private double stagnancyStep = 1e-15;
     private int stagnancyLimit = 10;
-    private double stoppingThreshold = 10.0;// - 1e-4;
+    private double stoppingThreshold = 10.0;
 
     private double[] sigmas = new double[]{0.5, 0.3, 0.4, 0.1, 0.6};
     private int selected_sigma_index = 0;

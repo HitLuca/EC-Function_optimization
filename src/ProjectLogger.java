@@ -15,8 +15,8 @@ public class ProjectLogger {
             "KatsuuraEvaluation"};
 
     private static String[] algorithms = new String[]{
-//            "SSGA",
-//            "GGA",
+            "SSGA",
+            "GGA",
             "PSO",
             "DE",
             "CMA-ES"};

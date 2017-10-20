@@ -148,7 +148,7 @@ public class player27 implements ContestSubmission {
         lambda = property == null ? lambda : Integer.parseInt(property);
 
         property = System.getProperty("mu");
-        mu = property == null ? mu : (int) (1.0 * lambda / Integer.parseInt(property));
+        mu = property == null ? mu : Integer.parseInt(property);
 
         ea = new CMAEvolutionaryStrategy(mu, lambda, evaluation_, epochs, printOutput);
     }

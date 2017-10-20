@@ -35,8 +35,8 @@ public class ProjectLogger {
         pr = run.exec("mv ./testrun/EC-Project.jar ./testrun/submission.jar");
         pr.waitFor();
 
-//        logCrossoverResults();
-        logAlgorithmResults();
+        logCrossoverResults();
+//        logAlgorithmResults();
 //        logGridSearch();
     }
 
@@ -171,13 +171,13 @@ public class ProjectLogger {
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-                String filename = dateFormat.format(date) + "_" + function + ".log";
+                String filename = dateFormat.format(date) + "_" + function + "_" + crossover + ".log";
 
                 FileWriter fileWriter = new FileWriter(outputDir + filename);
                 BufferedWriter logger = new BufferedWriter(fileWriter);
 
                 for (int i = 0; i < runsNumber; i++) {
-                    pr = run.exec("java -Dcrossover=" + crossover + " -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
+                    pr = run.exec("java -Dalgorithm=" + algorithms[0] + " -Dcrossover=" + crossover + " -jar ./testrun/testrun.jar -submission=player27 -evaluation=" + function + " -seed=1");
 
                     BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
                     String line;

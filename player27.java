@@ -91,7 +91,7 @@ public class player27 implements ContestSubmission {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
-            executor.submit(fooRunner).get(10, TimeUnit.SECONDS); // Timeout of 10 minutes.
+            executor.submit(fooRunner).get(10, TimeUnit.MINUTES); // Timeout of 10 minutes.
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -142,8 +142,8 @@ public class player27 implements ContestSubmission {
     }
 
     private void setupCMAES() {
-        int mu = 10;
-        int lambda = 30;
+        int mu = 7;
+        int lambda = 15;
         String property = System.getProperty("lambda");
         lambda = property == null ? lambda : Integer.parseInt(property);
 
@@ -155,7 +155,7 @@ public class player27 implements ContestSubmission {
 
     private void setupSSGA() {
         int populationSize = evaluations_limit_ <= 100000 ? evaluations_limit_ / 100 : evaluations_limit_ / 1000;
-        double sigma = 0.05;
+        double sigma = 0.1;
         int replacementNumber = populationSize / 10;
         double selectionPressure = 1.75;
 
@@ -227,10 +227,10 @@ public class player27 implements ContestSubmission {
     }
 
     private void setupPSO() {
-        int swarmSize = 50;
-        double w = 0.86;
-        double phi1 = 0.07;
-        double phi2 = 0.07;
+        int swarmSize = 100;
+        double w = 0.8;
+        double phi1 = 0.1;
+        double phi2 = 0.7;
 
         String property = System.getProperty("swarmSize");
         swarmSize = property == null ? swarmSize : Integer.parseInt(property);

@@ -36,8 +36,8 @@ public class ProjectLogger {
         pr.waitFor();
 
 //        logCrossoverResults();
-//        logAlgorithmResults();
-        logGridSearch();
+        logAlgorithmResults();
+//        logGridSearch();
     }
 
     private static void logGridSearch() throws IOException {
@@ -171,10 +171,9 @@ public class ProjectLogger {
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-                String outputPath = outputDir + dateFormat.format(date) + "_" + function + "/";
-                new File(outputPath).mkdir();
+                String filename = dateFormat.format(date) + "_" + function + ".log";
 
-                FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
+                FileWriter fileWriter = new FileWriter(outputDir + filename);
                 BufferedWriter logger = new BufferedWriter(fileWriter);
 
                 for (int i = 0; i < runsNumber; i++) {
@@ -204,10 +203,9 @@ public class ProjectLogger {
                 System.out.println("Function: " + function);
                 Date date = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-                String outputPath = outputDir + dateFormat.format(date) + "_" + algorithm + "_" + function + "/";
-                new File(outputPath).mkdir();
+                String filename =  dateFormat.format(date) + "_" + algorithm + "_" + function + ".log";
 
-                FileWriter fileWriter = new FileWriter(outputPath + "/run.log");
+                FileWriter fileWriter = new FileWriter(outputDir + filename);
                 BufferedWriter logger = new BufferedWriter(fileWriter);
 
                 for (int i = 0; i < runsNumber; i++) {
